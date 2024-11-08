@@ -11,6 +11,7 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import Alert from '@mui/material/Alert';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 // import { useNavigate } from "react-router-dom";
 // import { useAuth } from "../provider/authProvider";
@@ -126,10 +127,10 @@ export default function Login() {
                             id="email"
                             autoComplete="email"
                             autoFocus
-                            value={password}
+                            value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
-                        {emailError && <div className="error-message">{emailError}</div>}
+                        {emailError && <Alert variant="filled" severity="error">{emailError}</Alert>}
                         <TextField
                             margin="normal"
                             required
@@ -143,7 +144,7 @@ export default function Login() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
-                        {passwordError && <div className="error-message">{passwordError}</div>}
+                        {passwordError && <Alert variant="filled" severity="error">{passwordError}</Alert>}
 
                         <FormControlLabel
                             control={<Checkbox value="remember" color="primary" />}
