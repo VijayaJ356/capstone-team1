@@ -1,54 +1,26 @@
 import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
+// import Link from '@mui/material/Link';
+// import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Alert from '@mui/material/Alert';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-// import { useNavigate } from "react-router-dom";
-// import { useAuth } from "../provider/authProvider";
-
-// import { useAuth } from '../handlers/auth';
-
-function Copyright(props) {
-    return (
-        <Typography variant="body2" color="text.secondary" align="center" {...props}>
-            {'Copyright © '}
-            <Link color="inherit" href="https://tech.walmart.com/">
-                Walmart Global Tech
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
-
-// TODO remove, this demo shouldn't need to reset the theme.
+import { useAuth } from '../handlers/AuthContext';
 
 const defaultTheme = createTheme();
 
 export default function Login() {
-    // const handleSubmit = (event) => {
-    //     event.preventDefault();
-    //     const data = new FormData(event.currentTarget);
-    //     const email = data.get('email')
-    //     const password = data.get('password')
-
-    //     console.log({
-    //         username: data.get('username'),
-    //         password: data.get('password'),
-    //     });
-    // };
-
-    // const { login } = useAuth();
+    const navigate = useNavigate();
+    const { login } = useAuth();
 
     // States for form input values and error messages
     const [email, setEmail] = useState('');
@@ -88,9 +60,23 @@ export default function Login() {
         }
 
         if (valid) {
-            // login();
-            // Perform login operation (e.g., call an API)
-            console.log('Login successful');
+            // Mock API call
+            // const [credentials, setCredentials] = useState({ username: '', password: '' });
+            // const [error, setError] = useState('');
+            // setCredentials({ ...credentials, password: e.target.value })
+            // if (credentials.username === 'user' && credentials.password === 'password123') {
+            //     login({ username: credentials.username });
+            //     navigate('/account');
+            // } else {
+            //     setError('Invalid username or password');
+            // }
+            let auth = login(email, password)
+            if (auth) {
+                console.log('Login successful');
+                // console.log(auth)
+            }
+            else { alert("Authentication Failed") }
+            navigate('/account')
         }
     };
 
@@ -98,9 +84,6 @@ export default function Login() {
         <ThemeProvider theme={defaultTheme}>
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
-                <Typography component="h1" variant="h4">
-                    Customer Credit Card
-                </Typography>
                 <Box
                     sx={{
                         marginTop: 8,
@@ -115,7 +98,8 @@ export default function Login() {
                     <Typography component="h1" variant="h5">
                         Sign in
                     </Typography>
-                    <Box component="form" onSubmit={handleLogin} Validate sx={{ mt: 1 }}>
+                    <Box component="form" onSubmit={handleLogin} validate="true" sx={{ mt: 1 }}>
+                        {/* {error && <Typography color="error">{error}</Typography>} */}
                         <TextField
                             margin="normal"
                             required
@@ -158,21 +142,15 @@ export default function Login() {
                         >
                             Sign In
                         </Button>
-                        <Grid container>
-                            <Grid item xs>
-                                <Link href="#" variant="body2">
-                                    Forgot password?
-                                </Link>
-                            </Grid>
-                            <Grid item xs>
-                                <Link href="/signup" variant="body2">
-                                    {"Don't have an account? Sign Up"}
-                                </Link>
-                            </Grid>
-                        </Grid>
+                        <Button
+                            variant="outlined"
+                            component={Link} to="/signup"
+                            sx={{ mt: 1, mb: 2 }}
+                        >
+                            {"Don't have an account? Sign Up"}
+                        </Button>
                     </Box>
                 </Box>
-                <Copyright sx={{ mt: 8, mb: 4 }} />
             </Container>
         </ThemeProvider>
     );
