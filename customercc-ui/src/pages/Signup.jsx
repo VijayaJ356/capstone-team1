@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button, TextField, Typography, MenuItem, Box, Grid, IconButton, InputAdornment } from '@mui/material'
 import Avatar from '@mui/material/Avatar';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -8,7 +8,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Container from '@mui/material/Container';
 import Alert from '@mui/material/Alert';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useAuth } from '../handlers/AuthContext';
+// import { useAuth } from '../handlers/AuthContext';
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove"
 
@@ -17,8 +17,8 @@ import { users } from '../data/users'
 const defaultTheme = createTheme();
 
 export default function SignUp() {
-    const navigate = useNavigate();
-    const { login } = useAuth();
+    // const navigate = useNavigate();
+    // const { login } = useAuth();
 
     // States for form input values and error messages
     const [emailError, setEmailError] = useState('');
@@ -94,12 +94,12 @@ export default function SignUp() {
             alert('Registered successfully');
 
             // Login with newly register account
-            let auth = login(form.email, form.password)
-            if (auth) {
-                console.log('Login successful');
-                navigate('/account')
-            }
-            else { alert("Authentication Failed") }
+            // let auth = login(form.email, form.password)
+            // if (auth) {
+            //     console.log('Login successful');
+            //     navigate('/account')
+            // }
+            // else { alert("Authentication Failed") }
         }
     };
 
@@ -274,13 +274,14 @@ export default function SignUp() {
                             onChange={handleChange}
                         /> */}
                         {/* <CreditCardForm /> */}
-                        <Grid container spacing={2}>
+                        <Grid container spacing={0}>
                             {cards.map((card, index) => (
                                 <Grid item xs={12} key={card.id}>
                                     <TextField
                                         label={`Credit Card ${index + 1}`}
                                         variant="outlined"
                                         fullWidth
+                                        margin="normal"
                                         value={card.value}
                                         onChange={(e) => handleCardChange(card.id, e.target.value)}
                                         error={!!errors[card.id]}

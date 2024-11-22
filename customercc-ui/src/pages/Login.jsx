@@ -26,17 +26,11 @@ export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [emailError, setEmailError] = useState('');
-    const [passwordError, setPasswordError] = useState('');
 
     // Validation functions
     const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;  // Simple regex for email
         return emailRegex.test(email);
-    };
-
-    const validatePassword = (password) => {
-        const passwordRegex = /^(?=.*[!@#$%^&*])(?=.{6,})/; // At least 6 chars and 1 special char
-        return passwordRegex.test(password);
     };
 
     const handleLogin = (e) => {
@@ -49,14 +43,6 @@ export default function Login() {
             valid = false;
         } else {
             setEmailError('');
-        }
-
-        // Validate password
-        if (!validatePassword(password)) {
-            setPasswordError('Please have 1 special character and min 6 chars');
-            valid = false;
-        } else {
-            setPasswordError('');
         }
 
         if (valid) {
@@ -128,8 +114,6 @@ export default function Login() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
-                        {passwordError && <Alert variant="filled" severity="error">{passwordError}</Alert>}
-
                         <FormControlLabel
                             control={<Checkbox value="remember" color="primary" />}
                             label="Remember me"
