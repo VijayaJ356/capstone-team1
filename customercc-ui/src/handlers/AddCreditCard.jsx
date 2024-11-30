@@ -1,92 +1,216 @@
-// import React from 'react';
-import { Box, TextField, Button, Typography } from '@mui/material';
-import { Formik, Form } from 'formik';
-import * as Yup from 'yup';
+import { useState } from "react";
+import {
+    Box,
+    Button,
+    MenuItem,
+    TextField,
+    // Typography,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+} from "@mui/material";
 
-// Utility function for Luhn Algorithm
-const validateCardNumber = (number) => {
-    const digits = number.replace(/\D/g, "").split("").reverse();
-    const checksum = digits.reduce((acc, digit, idx) => {
-        digit = parseInt(digit, 10);
-        if (idx % 2 !== 0) digit *= 2;
-        if (digit > 9) digit -= 9;
-        return acc + digit;
-    }, 0);
-    return checksum % 10 === 0;
-};
-
-const AddCreditCard = () => {
-    const validationSchema = Yup.object({
-        number: Yup.string()
-            .required("Card number is required")
-            .test("luhn-check", "Invalid card number", (value) => validateCardNumber(value || "")),
-        name: Yup.string().required("Name on card is required"),
-        cvv: Yup.string().matches(/^\d{3}$/, "CVV must be 3 digits").required("CVV is required"),
-        // validFrom: Yup.string().matches(/^(0[1-9]|1[0-2])\/\d{2}$/, "Invalid format (MM/YY)").required("Valid From is required"),
-        expiry: Yup.string().matches(/^(0[1-9]|1[0-2])\/\d{2}$/, "Invalid format (MM/YY)").required("Expiry Date is required"),
+// eslint-disable-next-line react/prop-types
+const AddCreditCard = ({ open, onClose, onAddCard, existingCards }) => {
+    const [formData, setFormData] = useState({
+        cardNumber: "",
+        nameOnCard: "",
+        valid_from: "",
+        expiry: "",
+        cvv: "",
+        wireTransactionVendor: "",
+        status: "enabled",
     });
 
-    const handleSubmit = (values) => {
-        console.log(values); // Save the card details via an API
-        alert("Card Added Successfully!");
+    const [errors, setErrors] = useState({});
+
+    const wireTransactionVendors = ["VISA", "AMEX", "Rupay", "MasterCard"];
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+
+        if (name === "cardNumber") {
+            // Dynamically format the card number with dashes
+            const formattedValue = value
+                .replace(/\D/g, "") // Remove non-digits
+                .replace(/(\d{4})(?=\d)/g, "$1-")
+                .slice(0, 19);
+            setFormData({ ...formData, [name]: formattedValue });
+        }
+        else if (name === "cvv") {
+            const formattedValue = value
+                .replace(/\D/g, "")
+                .slice(0, 3);
+            setFormData({ ...formData, [name]: formattedValue });
+        }
+        else if (name === "valid_from" || name === "expiry") {
+            const formattedValue = value
+                .replace(/\D/g, "")
+                .replace(/(\d{2})(?=\d)/g, "$1/")
+                .slice(0, 5)
+            setFormData({ ...formData, [name]: formattedValue });
+        }
+        else {
+            setFormData({ ...formData, [name]: value });
+        }
+    };
+
+    const validateForm = () => {
+        const newErrors = {};
+
+        if (
+            !formData.cardNumber ||
+            formData.cardNumber.length !== 19 ||
+            formData.cardNumber === "0000-0000-0000-0000" ||
+            // eslint-disable-next-line react/prop-types
+            existingCards.some((card) => card.cardNumber === formData.cardNumber)
+        ) {
+            alert("Invalid or duplicate card number.");
+            return false;
+        }
+
+        // Validate card number
+        const plainCardNumber = formData.cardNumber.replace(/-/g, "");
+        if (!/^\d{16}$/.test(plainCardNumber)) {
+            newErrors.cardNumber = "Card number must be exactly 16 digits.";
+        } else if (plainCardNumber === "0000000000000000") {
+            newErrors.cardNumber = "Card number cannot be all zeros.";
+            // eslint-disable-next-line react/prop-types
+        } else if (existingCards.includes(plainCardNumber)) {
+            newErrors.cardNumber = "Card number must be unique.";
+        }
+
+        // Validate Name on Card
+        if (!formData.nameOnCard.trim()) {
+            newErrors.nameOnCard = "Name on card is required.";
+        }
+
+        // Validate Valid From
+        if (!/^\d{2}\/\d{2}$/.test(formData.valid_from)) {
+            newErrors.valid_from = "Valid From must be in MM/YY format.";
+        }
+
+        // Validate Expiry
+        if (!/^\d{2}\/\d{2}$/.test(formData.expiry)) {
+            newErrors.expiry = "Expiry must be in MM/YY format.";
+        }
+
+        // Validate CVV
+        if (!/^\d{3}$/.test(formData.cvv)) {
+            newErrors.cvv = "CVV must be exactly 3 digits.";
+        }
+
+        // Validate wireTransactionVendor
+        if (!formData.wireTransactionVendor) {
+            newErrors.wireTransactionVendor = "wireTransactionVendor selection is required.";
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const handleSubmit = () => {
+        if (validateForm()) {
+            const plainCardNumber = formData.cardNumber.replace(/-/g, " ");
+            onAddCard({ ...formData, cardNumber: plainCardNumber });
+            setFormData({
+                cardNumber: "",
+                nameOnCard: "",
+                valid_from: "",
+                expiry: "",
+                cvv: "",
+                wireTransactionVendor: "",
+                status: "enabled",
+            });
+            onClose();
+        }
     };
 
     return (
-        <Formik
-            initialValues={{ number: '', name: '', cvv: '', validFrom: '', expiry: '' }}
-            validationSchema={validationSchema}
-            onSubmit={handleSubmit}
-        >
-            {({ values, handleChange, errors, touched }) => (
-                <Form>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, maxWidth: 400, margin: 'auto' }}>
-                        <Typography variant="h4">Add Credit Card</Typography>
-                        <TextField
-                            label="Card Number"
-                            name="number"
-                            value={values.number}
-                            onChange={handleChange}
-                            error={touched.number && Boolean(errors.number)}
-                            helperText={touched.number && errors.number}
-                        />
-                        <TextField
-                            label="Name on Card"
-                            name="name"
-                            value={values.name}
-                            onChange={handleChange}
-                            error={touched.name && Boolean(errors.name)}
-                            helperText={touched.name && errors.name}
-                        />
-                        <TextField
-                            label="CVV"
-                            name="cvv"
-                            type="password"
-                            value={values.cvv}
-                            onChange={handleChange}
-                            error={touched.cvv && Boolean(errors.cvv)}
-                            helperText={touched.cvv && errors.cvv}
-                        />
-                        <TextField
-                            label="Valid From (MM/YY)"
-                            name="valid_from"
-                            value={values.valid_from}
-                            onChange={handleChange}
-                            error={touched.valid_from && Boolean(errors.valid_from)}
-                            helperText={touched.valid_from && errors.valid_from}
-                        />
-                        <TextField
-                            label="Expiry (MM/YY)"
-                            name="expiry"
-                            value={values.expiry}
-                            onChange={handleChange}
-                            error={touched.expiry && Boolean(errors.expiry)}
-                            helperText={touched.expiry && errors.expiry}
-                        />
-                        <Button type="submit" variant="contained">Add Card</Button>
-                    </Box>
-                </Form>
-            )}
-        </Formik>
+        <Dialog open={open} onClose={onClose} fullWidth>
+            <DialogTitle>Add Credit Card</DialogTitle>
+            <DialogContent>
+                <Box component="form" noValidate>
+                    <TextField
+                        fullWidth
+                        margin="normal"
+                        label="Card Number"
+                        name="cardNumber"
+                        value={formData.cardNumber}
+                        onChange={handleInputChange}
+                        helperText={errors.cardNumber}
+                        error={!!errors.cardNumber}
+                    />
+                    <TextField
+                        fullWidth
+                        margin="normal"
+                        label="Name on Card"
+                        name="nameOnCard"
+                        value={formData.nameOnCard}
+                        onChange={handleInputChange}
+                        helperText={errors.nameOnCard}
+                        error={!!errors.nameOnCard}
+                    />
+                    <TextField
+                        fullWidth
+                        margin="normal"
+                        label="Valid From (MM/YY)"
+                        name="valid_from"
+                        value={formData.valid_from}
+                        onChange={handleInputChange}
+                        helperText={errors.valid_from}
+                        error={!!errors.valid_from}
+                    />
+                    <TextField
+                        fullWidth
+                        margin="normal"
+                        label="Expiry (MM/YY)"
+                        name="expiry"
+                        value={formData.expiry}
+                        onChange={handleInputChange}
+                        helperText={errors.expiry}
+                        error={!!errors.expiry}
+                    />
+                    <TextField
+                        fullWidth
+                        margin="normal"
+                        label="CVV"
+                        name="cvv"
+                        value={formData.cvv}
+                        onChange={handleInputChange}
+                        helperText={errors.cvv}
+                        error={!!errors.cvv}
+                        type="password"
+                    />
+                    <TextField
+                        fullWidth
+                        margin="normal"
+                        label="wireTransactionVendor"
+                        name="wireTransactionVendor"
+                        select
+                        value={formData.wireTransactionVendor}
+                        onChange={handleInputChange}
+                        helperText={errors.wireTransactionVendor}
+                        error={!!errors.wireTransactionVendor}
+                    >
+                        {wireTransactionVendors.map((wireTransactionVendor) => (
+                            <MenuItem key={wireTransactionVendor} value={wireTransactionVendor}>
+                                {wireTransactionVendor}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                </Box>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={onClose} color="secondary">
+                    Cancel
+                </Button>
+                <Button onClick={handleSubmit} color="primary">
+                    Add Card
+                </Button>
+            </DialogActions>
+        </Dialog>
     );
 };
 

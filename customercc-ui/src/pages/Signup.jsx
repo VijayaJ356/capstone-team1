@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Link } from "react-router-dom";
-import { Button, TextField, Typography, MenuItem, Box, Grid, IconButton, InputAdornment } from '@mui/material'
+import { Link, useNavigate } from "react-router-dom";
+import { Button, TextField, Typography, MenuItem, Box, IconButton, InputAdornment } from '@mui/material'
+import Grid from '@mui/material/Grid2'
 import Avatar from '@mui/material/Avatar';
 import CssBaseline from '@mui/material/CssBaseline';
 // import Link from '@mui/material/Link';
@@ -8,7 +9,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Container from '@mui/material/Container';
 import Alert from '@mui/material/Alert';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-// import { useAuth } from '../handlers/AuthContext';
+import { useAuth } from '../handlers/AuthContext';
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove"
 
@@ -17,8 +18,10 @@ import { users } from '../data/users'
 const defaultTheme = createTheme();
 
 export default function SignUp() {
-    // const navigate = useNavigate();
-    // const { login } = useAuth();
+    const navigate = useNavigate();
+    const { loggedInUser } = useAuth();
+
+    if (loggedInUser) { navigate('/account') }
 
     // States for form input values and error messages
     const [emailError, setEmailError] = useState('');
@@ -276,7 +279,7 @@ export default function SignUp() {
                         {/* <CreditCardForm /> */}
                         <Grid container spacing={0}>
                             {cards.map((card, index) => (
-                                <Grid item xs={12} key={card.id}>
+                                <Grid item size={12} key={card.id}>
                                     <TextField
                                         label={`Credit Card ${index + 1}`}
                                         variant="outlined"
@@ -302,7 +305,7 @@ export default function SignUp() {
                                     />
                                 </Grid>
                             ))}
-                            <Grid item xs={12}>
+                            <Grid item size={12}>
                                 <Typography variant="body1" component="span" sx={{ ml: 1 }}>
                                     Add new credit card
                                 </Typography>

@@ -1,9 +1,14 @@
 import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 import { useAuth } from '../handlers/AuthContext'; // Custom Auth hook for context
-import { Link } from 'react-router-dom'; // For navigation
+import { Link, useNavigate } from 'react-router-dom'; // For navigation
 
 const Header = () => {
+    const navigate = useNavigate()
     const { loggedInUser, logout } = useAuth(); // Use auth context to get login state and logout function
+
+    function routetoaccount() {
+        navigate('/account')
+    }
 
     return (
         <AppBar position="fixed" sx={{ mb: 10 }}>
@@ -31,9 +36,13 @@ const Header = () => {
                             <Typography variant="body1" color="inherit" sx={{ marginRight: 2 }}>
                                 Welcome, {loggedInUser?.name}
                             </Typography>
+                            <Button color="inherit" onClick={routetoaccount}>
+                                Profile
+                            </Button>
                             <Button color="inherit" onClick={logout}>
                                 Logout
                             </Button>
+
                         </>
                     )}
                 </Box>

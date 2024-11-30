@@ -6,14 +6,17 @@ const AuthContext = createContext();
 // eslint-disable-next-line react/prop-types
 export const AuthProvider = ({ children }) => {
     const [loggedInUser, setLoggedInUser] = useState(null);
+    const [isAuthenticated, setAuthentication] = useState(null)
 
     useEffect(() => {
         const storedUser = localStorage.getItem('loggedInUser');
         if (storedUser) {
             const user = JSON.parse(storedUser);
             setLoggedInUser(user);
+            setAuthentication(true)
+            console.log("User", user.username, "is logged in", isAuthenticated)
         }
-    }, []);
+    }, [isAuthenticated]);
 
     const login = (username, password) => {
         const user = users.find((u) => u.email === username);
@@ -21,6 +24,7 @@ export const AuthProvider = ({ children }) => {
         if (user) {
             if (pass) {
                 setLoggedInUser(user);
+                setAuthentication(true)
                 localStorage.setItem('loggedInUser', JSON.stringify(user));
                 return (user)
             }
@@ -34,14 +38,12 @@ export const AuthProvider = ({ children }) => {
 
     const logout = () => {
         setLoggedInUser(null);
-        // setAuthentication(false)
+        setAuthentication(null)
         localStorage.removeItem('loggedInUser');
         return true
     };
 
     // Helper to check if user is authenticated
-    const isAuthenticated = loggedInUser !== null;
-
     return (
         <AuthContext.Provider value={{ loggedInUser, login, logout, isAuthenticated }}>
             {children}

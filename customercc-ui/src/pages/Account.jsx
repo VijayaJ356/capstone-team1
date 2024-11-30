@@ -5,14 +5,16 @@ import {
     Card,
     CardContent,
     Typography,
-    Grid,
     Avatar,
     Button
 } from "@mui/material";
+
+import Grid from "@mui/material/Grid2"
+
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 // import CreditCards from '../pages/CreditCards';
 
-export const Account = () => {
+const Account = () => {
     const navigate = useNavigate()
     const { loggedInUser } = useAuth();
 
@@ -45,7 +47,7 @@ export const Account = () => {
                 <CardContent>
                     <Grid container spacing={2} alignItems="center">
                         {/* Profile Picture */}
-                        <Grid item xs={12} sx={{ textAlign: "center" }}>
+                        <Grid item size={12} sx={{ textAlign: "center" }}>
                             <Avatar
                                 sx={{
                                     width: 80,
@@ -62,35 +64,35 @@ export const Account = () => {
                         </Grid>
 
                         {/* Profile Details */}
-                        <Grid item xs={12}>
+                        <Grid item size={12}>
                             <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
                                 Name:
                             </Typography>
                             <Typography variant="body1">{loggedInUser.name}</Typography>
                         </Grid>
 
-                        <Grid item xs={12}>
+                        <Grid item size={12}>
                             <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
                                 Email:
                             </Typography>
                             <Typography variant="body1">{loggedInUser.email}</Typography>
                         </Grid>
 
-                        <Grid item xs={12}>
+                        <Grid item size={12}>
                             <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
                                 Sex:
                             </Typography>
                             <Typography variant="body1">{loggedInUser.sex}</Typography>
                         </Grid>
 
-                        <Grid item xs={12}>
+                        <Grid item size={12}>
                             <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
                                 Username:
                             </Typography>
                             <Typography variant="body1">{loggedInUser.username}</Typography>
                         </Grid>
 
-                        <Grid item xs={12}>
+                        <Grid item size={12}>
                             <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
                                 Date of Birth:
                             </Typography>
@@ -103,3 +105,5 @@ export const Account = () => {
         </Box>
     )
 }
+
+export default Account;

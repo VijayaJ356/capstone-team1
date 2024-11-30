@@ -7,7 +7,7 @@ import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 // import Link from '@mui/material/Link';
-// import Grid from '@mui/material/Grid';
+// import Grid2 from '@mui/material/Grid2';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
@@ -20,7 +20,9 @@ const defaultTheme = createTheme();
 
 export default function Login() {
     const navigate = useNavigate();
-    const { login } = useAuth();
+    const { login, logout, loggedInUser } = useAuth();
+
+    if (loggedInUser && !logout) { navigate('/account') }
 
     // States for form input values and error messages
     const [email, setEmail] = useState('');
