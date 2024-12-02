@@ -10,12 +10,14 @@ import {
     DialogContent,
     DialogActions,
 } from "@mui/material";
+import { useAuth } from '../handlers/AuthContext';
 
 // eslint-disable-next-line react/prop-types
 const AddCreditCard = ({ open, onClose, onAddCard, existingCards }) => {
+    const { loggedInUser } = useAuth();
     const [formData, setFormData] = useState({
         cardNumber: "",
-        nameOnCard: "",
+        nameOnCard: loggedInUser.name,
         valid_from: "",
         expiry: "",
         cvv: "",
@@ -59,22 +61,12 @@ const AddCreditCard = ({ open, onClose, onAddCard, existingCards }) => {
     const validateForm = () => {
         const newErrors = {};
 
-        if (
-            !formData.cardNumber ||
-            formData.cardNumber.length !== 19 ||
-            formData.cardNumber === "0000-0000-0000-0000" ||
-            // eslint-disable-next-line react/prop-types
-            existingCards.some((card) => card.cardNumber === formData.cardNumber)
-        ) {
-            alert("Invalid or duplicate card number.");
-            return false;
-        }
-
         // Validate card number
-        const plainCardNumber = formData.cardNumber.replace(/-/g, "");
-        if (!/^\d{16}$/.test(plainCardNumber)) {
+        const plainCardNumber = formData.cardNumber.replace(/-/g, " ");
+
+        if (plainCardNumber.length != 19) {
             newErrors.cardNumber = "Card number must be exactly 16 digits.";
-        } else if (plainCardNumber === "0000000000000000") {
+        } else if (plainCardNumber === "0000 0000 0000 0000") {
             newErrors.cardNumber = "Card number cannot be all zeros.";
             // eslint-disable-next-line react/prop-types
         } else if (existingCards.includes(plainCardNumber)) {
@@ -86,14 +78,25 @@ const AddCreditCard = ({ open, onClose, onAddCard, existingCards }) => {
             newErrors.nameOnCard = "Name on card is required.";
         }
 
+        if (formData.expiry.split("/")[1] < formData.valid_from.split("/")[1]) {
+            newErrors.valid_from = "Card expiry year must be greater than the issued year.";
+        }
+
         // Validate Valid From
-        if (!/^\d{2}\/\d{2}$/.test(formData.valid_from)) {
+        if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(formData.valid_from)) {
             newErrors.valid_from = "Valid From must be in MM/YY format.";
         }
 
         // Validate Expiry
-        if (!/^\d{2}\/\d{2}$/.test(formData.expiry)) {
+        if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(formData.expiry)) {
             newErrors.expiry = "Expiry must be in MM/YY format.";
+        }
+        const [month, year] = formData.expiry.split("/").map(Number);
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear() % 100; // Get last 2 digits of the year
+        const currentMonth = currentDate.getMonth() + 1;
+        if (year < currentYear || (year === currentYear && month < currentMonth)) {
+            newErrors.expiry = "Card has expired."
         }
 
         // Validate CVV
@@ -116,7 +119,7 @@ const AddCreditCard = ({ open, onClose, onAddCard, existingCards }) => {
             onAddCard({ ...formData, cardNumber: plainCardNumber });
             setFormData({
                 cardNumber: "",
-                nameOnCard: "",
+                nameOnCard: loggedInUser.name,
                 valid_from: "",
                 expiry: "",
                 cvv: "",
@@ -148,6 +151,7 @@ const AddCreditCard = ({ open, onClose, onAddCard, existingCards }) => {
                         label="Name on Card"
                         name="nameOnCard"
                         value={formData.nameOnCard}
+                        disabled
                         onChange={handleInputChange}
                         helperText={errors.nameOnCard}
                         error={!!errors.nameOnCard}

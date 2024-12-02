@@ -18,13 +18,12 @@ const Account = () => {
     const navigate = useNavigate()
     const { loggedInUser } = useAuth();
 
-    console.log(loggedInUser)
-
     function routetocards() {
         navigate('/cards')
     }
 
     return (
+        
         <Box
         // sx={{
         //     display: "flex",

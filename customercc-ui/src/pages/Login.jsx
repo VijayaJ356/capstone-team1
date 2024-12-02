@@ -20,9 +20,9 @@ const defaultTheme = createTheme();
 
 export default function Login() {
     const navigate = useNavigate();
-    const { login, logout, loggedInUser } = useAuth();
+    const { login, loggedInUser } = useAuth();
 
-    if (loggedInUser && !logout) { navigate('/account') }
+    if (loggedInUser) { navigate('/account') }
 
     // States for form input values and error messages
     const [email, setEmail] = useState('');
@@ -62,9 +62,9 @@ export default function Login() {
             if (auth) {
                 console.log('Login successful');
                 // console.log(auth)
+                navigate('/account')
             }
             else { alert("Authentication Failed") }
-            navigate('/account')
         }
     };
 

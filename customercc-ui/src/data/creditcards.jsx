@@ -1,4 +1,4 @@
-export const cards = [
+export var cards = [
     {
         "username": "user_1",
         "nameOnTheCard": "User 1",

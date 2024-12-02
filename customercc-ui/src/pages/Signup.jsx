@@ -30,8 +30,8 @@ export default function SignUp() {
 
     // Validation functions
     const validateUserName = (username) => {
-        const emailRegex = /^(?=.{6,})/;  // Simple regex for username
-        return emailRegex.test(username);
+        const usernameRegex = /^(?=.{6,})/;  // Simple regex for username
+        return usernameRegex.test(username);
     };
 
     const validateEmail = (email) => {
@@ -66,8 +66,9 @@ export default function SignUp() {
             setUsernameError('Please enter min 6 chars');
             valid = false;
         } else {
-            const usernamematch = users.find((u) => u.username == username);
-            const emailmatch = users.find((u) => u.email == email);
+            // Check if username already exists
+            const usernamematch = users.some((u) => u.username == username);
+            const emailmatch = users.some((u) => u.email == email);
             if (usernamematch) {
                 setUsernameError('User Already Present');
                 valid = false;
@@ -93,8 +94,30 @@ export default function SignUp() {
 
         if (valid) {
             console.log('Registered successfully');
-            console.log(form);
             alert('Registered successfully');
+
+            // Add the new user to the users array
+            const userData = {
+                username: form.username,
+                password: form.password,
+                credit_card: form.creditCards, // Initially empty
+                name: `${form.name.firstname} ${form.name.lastname} `,
+                dob: form.dob,
+                sex: form.sex.toUpperCase(), // Ensure consistent case
+                email: form.email,
+            }
+
+            users.push(userData);
+
+            // Send data to API
+            // fetch("https://api.example.com/api/customer/register", {
+            //     method: "POST",
+            //     headers: { "Content-Type": "application/json" },
+            //     body: JSON.stringify(userData),
+            // })
+            //     .then((response) => response.json())
+            //     .then((data) => console.log("Update successful:", data))
+            //     .catch((error) => console.error("Error updating user:", error));
 
             // Login with newly register account
             // let auth = login(form.email, form.password)
@@ -107,7 +130,10 @@ export default function SignUp() {
     };
 
     const [form, setForm] = useState({
-        name: '',
+        name: {
+            firstname: '',
+            lastname: ''
+        },
         email: '',
         username: '',
         password: '',
@@ -116,7 +142,22 @@ export default function SignUp() {
         creditCards: [],
     });
     const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        if (name === "username") {
+            const formattedValue = value
+                .slice(0, 6);
+            setForm({ ...form, [name]: formattedValue });
+        } else if (name == "firstname" || name == "lastname") {
+            setForm({
+                ...form, name: {
+                    ...form.name,
+                    [name]: value,
+                },
+            });
+        }
+        else {
+            setForm({ ...form, [e.target.name]: e.target.value });
+        }
     };
 
     const [cards, setCards] = useState([{ id: 1, value: "" }]);
@@ -197,7 +238,8 @@ export default function SignUp() {
                         Sign Up
                     </Typography>
                     <Box component="form" onSubmit={handleSignUp} validate="true" sx={{ mt: 1 }}>
-                        <TextField required label="Name" name="name" fullWidth margin="normal" onChange={handleChange} autoFocus />
+                        <TextField required label="First Name" name="firstname" fullWidth margin="normal" onChange={handleChange} autoFocus />
+                        <TextField required label="Last Name" name="lastname" fullWidth margin="normal" onChange={handleChange} autoFocus />
                         <TextField
                             margin="normal"
                             required

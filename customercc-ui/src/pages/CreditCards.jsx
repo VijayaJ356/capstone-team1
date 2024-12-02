@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, Typography, Button, Box, IconButton } from '@mui/material';
 import Grid from "@mui/material/Grid2"
@@ -19,16 +19,65 @@ import defaultIcon from '../assets/icons/default.png';
 const CreditCards = () => {
     const navigate = useNavigate()
     const { loggedInUser } = useAuth();
-    const [usercardslist, setUserCardsList] = useState((cards.find(item => item.username == loggedInUser.username)).credit_card);
+    const [userCardslist, setUserCardsList] = useState([]);
+    const [userCardsData, setUserCardsData] = useState({
+        username: loggedInUser?.username || "",
+        nameOnTheCard: loggedInUser?.name || "",
+        credit_card: [],
+    });
     const [openAddCard, setOpenAddCard] = useState(false);
 
+    // Update user cards data on component mount or loggedInUser change
+    useEffect(() => {
+        if (loggedInUser) {
+            const userCardsCheck = cards.find(
+                (item) => item.username === loggedInUser.username
+            );
+            if (userCardsCheck) {
+                setUserCardsData(userCardsCheck);
+                setUserCardsList(userCardsCheck.credit_card);
+            }
+        }
+    }, [loggedInUser]); // Trigger only when `loggedInUser` or `cards` change
+
+
     const handleAddCard = (newCard) => {
-        setUserCardsList([...usercardslist, newCard]);
+        // Create new card data object
+        const newCardData = {
+            cardNumber: newCard.cardNumber,
+            valid_from: newCard.valid_from,
+            expiry: newCard.expiry,
+            cvv: newCard.cvv,
+            wireTransactionVendor: newCard.wireTransactionVendor,
+            status: newCard.status,
+        };
+
+        // Update the local state for cards
+        setUserCardsList((prevList) => [...prevList, newCardData]);
+        // Update user's cards list
+        setUserCardsData((prevData) => ({
+            ...prevData,
+            credit_card: [...prevData.credit_card, newCardData],
+        }));
+
+        // Find index of the logged-in user in the cards array
+        const userIndex = cards.findIndex(
+            (card) => card.username === loggedInUser.username
+        );
+
+        if (userIndex !== -1) {
+            // If user exists, update their credit_card list
+            cards[userIndex].credit_card.push(newCardData);
+        } else {
+            // If user does not exist, create a new user entry in cards
+            cards.push({
+                username: loggedInUser.username,
+                nameOnTheCard: loggedInUser.name || loggedInUser.username,
+                credit_card: [newCardData],
+            });
+        }
     };
 
-    const usercards = cards.find(item => item.username == loggedInUser.username)
-
-    // console.log(usercards)
     // const [responseData, setResponseData] = useState(null)
 
     // const Get_Cards = async () => {
@@ -69,11 +118,11 @@ const CreditCards = () => {
 
 
     function toggleStatus(card) {
-        let usercard = usercards.credit_card.find(item => { item.cardNumber == card.cardNumber })
+        let usercard = userCardsData.credit_card.find(item => { item.cardNumber == card.cardNumber })
 
         if (card.status == "disabled") { card.status = "enabled" }
         else if (card.status == "enabled") { card.status = "disabled" }
-        console.log(card.status, card["status"], card.cardNumber, usercards.credit_card, usercard)
+        console.log(card.status, card["status"], usercard)
     };
 
     const getwireTransactionVendorStyle = (type) => {
@@ -118,7 +167,7 @@ const CreditCards = () => {
                     padding: 3,
                 }}
             >
-                {loggedInUser && usercards && usercardslist.map((card, index) => (
+                {userCardslist ? userCardslist.map((card, index) => (
                     <Card
                         key={index}
                         sx={{
@@ -241,18 +290,29 @@ const CreditCards = () => {
                                     textAlign: "left",
                                 }}
                             >
-                                {usercards.nameOnTheCard}
+                                {userCardsData.nameOnTheCard}
                             </Typography>
                         </CardContent>
                     </Card>
-                ))}
+                ))
+                    : <Typography
+                        variant="h6"
+                        sx={{
+                            fontSize: "1.2rem",
+                            letterSpacing: 1,
+                            marginTop: 3,
+                            fontWeight: "bold",
+                            textAlign: "left",
+                        }}
+                    > No Credit Cards Data Found</Typography>
+                }
             </Box >
             <button onClick={() => setOpenAddCard(true)}>+ Add Credit Card</button>
             <AddCreditCard
                 open={openAddCard}
                 onClose={() => setOpenAddCard(false)}
                 onAddCard={handleAddCard}
-                existingCards={usercards.credit_card.map((card) => card.cardNumber)}
+                existingCards={userCardsData.credit_card.map((card) => card.cardNumber)}
             />
         </>
     );
