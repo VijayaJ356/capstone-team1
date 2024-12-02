@@ -11,7 +11,7 @@ Introduction
 A one stop solution to manage all your credit cards. For each payment the user will be rewarded with exciting rewards.
 Tech Stack
 
-    React
+    React (MUI)
     Java
     MongoDB
 
