@@ -10,6 +10,8 @@ import ProtectedRoute from "./handlers/ProtectedRoute";
 import Header from './components/header';
 import { Copyright } from "./components/footer";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import React from "react";
+import UserProfile from "./pages/profile";
 
 const defaultTheme = createTheme();
 
@@ -25,6 +27,7 @@ function App() {
           {/* <Route path="/" element={<Navigate replace to="/login" />} /> */}
           <Route exact path="/login" element={<Login />} />
           <Route exact path="/signup" element={<SignUp />} />
+          <Route path="/profile" element={<UserProfile />} />
           <Route path="/cards" element={<ProtectedRoute><CreditCards /></ProtectedRoute>} />
           <Route
             path="/account"
