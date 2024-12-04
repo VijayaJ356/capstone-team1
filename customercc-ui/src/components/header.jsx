@@ -6,8 +6,8 @@ const Header = () => {
     const navigate = useNavigate()
     const { loggedInUser, logout } = useAuth(); // Use auth context to get login state and logout function
 
-    function routetoaccount() {
-        navigate('/account')
+    function routetoprofile() {
+        navigate('/profile')
     }
 
     return (
@@ -36,7 +36,7 @@ const Header = () => {
                             <Typography variant="body1" color="inherit" sx={{ marginRight: 2 }}>
                                 Welcome, {loggedInUser?.name}
                             </Typography>
-                            <Button color="inherit" onClick={routetoaccount}>
+                            <Button color="inherit" onClick={routetoprofile}>
                                 Profile
                             </Button>
                             <Button color="inherit" onClick={logout}>

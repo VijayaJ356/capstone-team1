@@ -21,7 +21,7 @@ export default function SignUp() {
     const navigate = useNavigate();
     const { loggedInUser } = useAuth();
 
-    if (loggedInUser) { navigate('/account') }
+    if (loggedInUser) { navigate('/profile') }
 
     // States for form input values and error messages
     const [emailError, setEmailError] = useState('');
@@ -123,7 +123,7 @@ export default function SignUp() {
             // let auth = login(form.email, form.password)
             // if (auth) {
             //     console.log('Login successful');
-            //     navigate('/account')
+            //     navigate('/profile')
             // }
             // else { alert("Authentication Failed") }
         }

@@ -22,7 +22,7 @@ export default function Login() {
     const navigate = useNavigate();
     const { login, loggedInUser } = useAuth();
 
-    if (loggedInUser) { navigate('/account') }
+    if (loggedInUser) { navigate('/profile') }
 
     // States for form input values and error messages
     const [email, setEmail] = useState('');
@@ -54,7 +54,7 @@ export default function Login() {
             // setCredentials({ ...credentials, password: e.target.value })
             // if (credentials.username === 'user' && credentials.password === 'password123') {
             //     login({ username: credentials.username });
-            //     navigate('/account');
+            //     navigate('/profile');
             // } else {
             //     setError('Invalid username or password');
             // }
@@ -62,7 +62,7 @@ export default function Login() {
             if (auth) {
                 console.log('Login successful');
                 // console.log(auth)
-                navigate('/account')
+                navigate('/profile')
             }
             else { alert("Authentication Failed") }
         }

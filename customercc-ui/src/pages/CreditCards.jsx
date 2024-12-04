@@ -92,8 +92,8 @@ const CreditCards = () => {
     //         });
     // }
 
-    function routetoaccount() {
-        navigate('/account')
+    function routetoprofile() {
+        navigate('/profile')
     }
 
     function sleep(ms) { return new Promise((resolve) => setTimeout(resolve, ms)) }
@@ -157,7 +157,7 @@ const CreditCards = () => {
 
     return (
         <>
-            <Button sx={{ marginTop: 10, marginBottom: 2 }} type="button" onClick={routetoaccount}>Back to Profile</Button>
+            <Button sx={{ marginTop: 10, marginBottom: 2 }} type="button" onClick={routetoprofile}>Back to Profile</Button>
             <Box
                 sx={{
                     display: "flex",
