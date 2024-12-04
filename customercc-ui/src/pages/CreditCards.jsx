@@ -19,6 +19,7 @@ import defaultIcon from '../assets/icons/default.png';
 const CreditCards = () => {
     const navigate = useNavigate()
     const { loggedInUser } = useAuth();
+    // const [cards, setCards] = useState(null)
     const [userCardslist, setUserCardsList] = useState([]);
     const [userCardsData, setUserCardsData] = useState({
         username: loggedInUser?.username || "",
@@ -26,6 +27,18 @@ const CreditCards = () => {
         credit_card: [],
     });
     const [openAddCard, setOpenAddCard] = useState(false);
+
+    // const Get_Cards = async () => {
+    //     await axios
+    //         .get(`http://localhost/getcards`)
+    //         .then((response) => {
+    //             setCards(response.data)
+    //             console.log(response)
+    //         })
+    //         .catch((error) => {
+    //             console.log(error)
+    //         });
+    // }
 
     // Update user cards data on component mount or loggedInUser change
     useEffect(() => {
@@ -78,20 +91,6 @@ const CreditCards = () => {
         }
     };
 
-    // const [responseData, setResponseData] = useState(null)
-
-    // const Get_Cards = async () => {
-    //     await axios
-    //         .get(`http://localhost/getcards`)
-    //         .then((response) => {
-    //             setResponseData(response.data)
-    //             console.log(response)
-    //         })
-    //         .catch((error) => {
-    //             console.log(error)
-    //         });
-    // }
-
     function routetoprofile() {
         navigate('/profile')
     }
@@ -118,11 +117,11 @@ const CreditCards = () => {
 
 
     function toggleStatus(card) {
-        let usercard = userCardsData.credit_card.find(item => { item.cardNumber == card.cardNumber })
+        const userCard = userCardsData.credit_card.find((item) => item.cardNumber === "6211 9259 1374 0154");
 
         if (card.status == "disabled") { card.status = "enabled" }
         else if (card.status == "enabled") { card.status = "disabled" }
-        console.log(card.status, card["status"], usercard)
+        console.log(userCard, card.status,)
     };
 
     const getwireTransactionVendorStyle = (type) => {

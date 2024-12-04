@@ -4,6 +4,7 @@ import './App.css'
 import Home from './pages/Home'
 import Login from './pages/Login';
 import SignUp from './pages/Signup';
+import EmailVerification from './pages/Email_Verification'
 import UserProfile from "./pages/profile";
 import CreditCards from './pages/CreditCards';
 import ProtectedRoute from "./handlers/ProtectedRoute";
@@ -25,6 +26,7 @@ function App() {
           <Route exact path="/home" element={<Home />} />
           <Route exact path="/login" element={<Login />} />
           <Route exact path="/signup" element={<SignUp />} />
+          <Route path="/verify-email" element={<EmailVerification />} />
           <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
           <Route path="/cards" element={<ProtectedRoute> <CreditCards /> </ProtectedRoute>} />
         </Routes>
