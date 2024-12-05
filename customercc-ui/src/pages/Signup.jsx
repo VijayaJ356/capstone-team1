@@ -1,14 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from "react-router-dom";
-import { Button, TextField, Typography, MenuItem, Box, FormControlLabel, Checkbox, Container, Alert, Avatar, CssBaseline } from '@mui/material'
+import { Button, TextField, Typography, MenuItem, Box, Container, Avatar, CssBaseline, Snackbar, Alert } from '@mui/material'
 import Grid from '@mui/material/Grid2'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useAuth } from '../handlers/AuthContext';
-// import AddIcon from "@mui/icons-material/Add";
-// import RemoveIcon from "@mui/icons-material/Remove"
 
 import axios from "axios";
+import dayjs from "dayjs";
 
 import { users } from '../data/users'
 
@@ -16,16 +15,9 @@ const defaultTheme = createTheme();
 
 export default function SignUp() {
     const navigate = useNavigate();
-    const { loggedInUser } = useAuth();
-
-    if (loggedInUser) { navigate('/profile') }
+    const { loggedInUser, login } = useAuth();
 
     // States for form input values and error messages
-    // const [errors, setErrors] = useState({});
-    const [emailError, setEmailError] = useState('');
-    const [usernameError, setUsernameError] = useState('');
-    const [passwordError, setPasswordError] = useState('');
-
     const [form, setForm] = useState({
         name: {
             first: '',
@@ -37,7 +29,6 @@ export default function SignUp() {
         dob: null,
         sex: '',
         // creditCards: [],
-        customerId: "112",
         address: {
             houseNo: "",
             street: "",
@@ -46,19 +37,42 @@ export default function SignUp() {
             state: "",
             country: "",
         },
-        active: false,
     });
+    const [errors, setErrors] = useState({})
+
+    if (loggedInUser) { navigate('/profile') }
+
+
+    // Validate Date of Birth
+    const validateDOB = (value) => {
+        const [year, month, day] = value.split("-").map(Number);
+
+        // Ensure the year is a 4-digit number
+        const fullYear = year < 100 ? `20${year}` : year;
+
+        const enteredDate = dayjs(`${fullYear}-${month}-${day}`);
+        if (!enteredDate.isValid()) {
+            return "Invalid date.";
+        }
+
+        const today = dayjs();
+        const age = today.diff(enteredDate, "year");
+
+        if (age < 18) {
+            return "User must be at least 18 years old.";
+        }
+        if (age > 120) {
+            return "Invalid age. Please enter a realistic date of birth.";
+        }
+
+        return ""; // No errors
+    };
+
+    // Function to dynamically handle changes in all input fields
     const handleChange = (e) => {
         const { name, value } = e.target;
 
-        // // Validate username length
-        // if (name === "username") {
-        //     if (value.length < 6) {
-        //         setErrors((prev) => ({ ...prev, username: "Username must be at least 6 characters." }));
-        //     } else {
-        //         setErrors((prev) => ({ ...prev, username: "" }));
-        //     }
-        // }
+        errors[name] = ""
 
         // Update form data
         if (name.includes("name.")) {
@@ -67,89 +81,113 @@ export default function SignUp() {
                 ...prev,
                 name: { ...prev.name, [key]: value },
             }));
-        } else if (name.includes("address.")) {
+        }
+        else if (name === "email") {
+            setForm({ ...form, [name]: value });
+
+            if (!(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))) {
+                errors[name] = 'Please enter valid email'
+            } else {
+                const emailmatch = users.some((u) => u.email == value);
+                if (emailmatch) {
+                    errors[name] = 'Email Already Present'
+                }
+            }
+        }
+        else if (name === "username") {
+            setForm({ ...form, [name]: value });
+            // const formattedvalue = value
+            // .replace(/^(?=.{6,})/, "")
+            if (!(/^(?=.{6,})/.test(value))) {
+                errors[name] = 'Please enter min 6 chars'
+            } else {
+                // Check if username already exists
+                const usernamematch = users.some((u) => u.username == value);
+                if (usernamematch) {
+                    errors[name] = 'User Already Present'
+                }
+            }
+        }
+        else if (name === "password") {
+            const formattedvalue = value
+                .replace(/^(?=.*[!@#$%^&*])(?=.{6,})/, "")
+
+            setForm({ ...form, [name]: formattedvalue });
+
+            if (!(/^(?=.*[!@#$%^&*])(?=.{6,})/.test(formattedvalue))) {
+                errors[name] = "Please have 1 special character and min 6 chars"
+            }
+        }
+        else if (name === "dob") {
+            setForm({ ...form, [name]: value });
+            errors[name] = validateDOB(value);
+        }
+        else if (name.includes("address.")) {
             const [, key] = name.split(".");
+            var formattedvalue = value
+            if (key == "pin") {
+                formattedvalue = value
+                    .replace(/\D/g, "") // Remove Non-Digits
+                    .slice(0, 6);
+                if (formattedvalue.length < 6) {
+                    errors[name] = 'Please enter min 6 digits'
+                }
+            }
             setForm((prev) => ({
                 ...prev,
-                address: { ...prev.address, [key]: value },
+                address: { ...prev.address, [key]: formattedvalue },
             }));
-        } else if (name === "active") {
-            setForm((prev) => ({ ...prev, active: e.target.checked }));
         }
         else {
-            setForm({ ...form, [e.target.name]: e.target.value });
+            setForm({ ...form, [name]: value });
         }
+
+        setErrors(errors)
+
     };
 
-    // Validation functions
-    const validateUserName = (username) => {
-        const usernameRegex = /^(?=.{6,})/;  // Simple regex for username
-        return usernameRegex.test(username);
-    };
+    // Validate if there are any pending errors for any input field in the form
+    const validateForm = () => {
+        const newErrors = {}
 
-    const validateEmail = (email) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;  // Simple regex for email
-        return emailRegex.test(email);
-    };
+        // Revalidating username and email
+        if (users.some((u) => u.username == form.username)) {
+            errors["username"] = 'User Already Present'
+        }
+        if (users.some((u) => u.email == form.email)) {
+            errors["email"] = 'Email Already Present'
+        }
+        setErrors(errors)
 
-    const validatePassword = (password) => {
-        const passwordRegex = /^(?=.*[!@#$%^&*])(?=.{6,})/; // At least 6 chars and 1 special char
-        return passwordRegex.test(password);
-    };
+        Object.keys(errors).forEach(item => {
+            if (errors[item] != "") {
+                newErrors[item] = errors[item]
+            }
+        })
+        return Object.keys(newErrors).length === 0;
+    }
+
+    const [registered, setRegistered] = useState(false);
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+
+    useEffect(() => {
+        if (registered) {
+            setOpenSnackbar(true); // Show the alert
+            // Close Banner after 2 seconds
+            const timer = setTimeout(() => {
+                setOpenSnackbar(false);
+            }, 3000);
+            return () => clearTimeout(timer); // Cleanup timer on unmount
+        }
+    }, [registered]);
 
     const handleSignUp = async (e) => {
         e.preventDefault();
-        let valid = true;
 
-        const data = new FormData(e.currentTarget);
-        const email = data.get('email')
-        const password = data.get('password')
-        const username = data.get('username')
-
-        // Validate email
-        if (!validateEmail(email)) {
-            setEmailError('Please enter valid email');
-            valid = false;
-        } else {
-            setEmailError('');
-        }
-
-        // Validate username
-        if (!validateUserName(username)) {
-            setUsernameError('Please enter min 6 chars');
-            valid = false;
-        } else {
-            // Check if username already exists
-            const usernamematch = users.some((u) => u.username == username);
-            const emailmatch = users.some((u) => u.email == email);
-            if (emailmatch) {
-                setEmailError('Email Already Present');
-                valid = false;
-            } else if (usernamematch) {
-                setUsernameError('User Already Present');
-                valid = false;
-            } else {
-                setUsernameError('');
-            }
-        }
-
-        // Validate password
-        if (!validatePassword(password)) {
-            setPasswordError('Please have 1 special character and min 6 chars');
-            valid = false;
-        } else {
-            setPasswordError('');
-        }
-
-        // if (!validateCards()) {
-        //     valid = false;
-        // }
-
-        if (valid) {
+        if (validateForm()) {
             console.log('Registered successfully');
             alert('Registered successfully');
-
-            // setForm({ ...form, ["sex"]: form.sex.toUpperCase() });
+            setRegistered(!registered)
 
             console.log(form)
 
@@ -158,9 +196,9 @@ export default function SignUp() {
 
             try {
                 const response = await axios.post("http://localhost:9095/api/customer/register", form);
-                console.log("Customer registered successfully:", response.data);
+                console.log("[API] Customer registered successfully:", response.data);
             } catch (error) {
-                console.error("Error registering customer:", error);
+                console.error("[API] Error registering customer:", error);
             }
 
             // Send data to API
@@ -174,78 +212,36 @@ export default function SignUp() {
             //     .catch((error) => console.error("Error updating user:", error));
 
             // Login with newly register account
-            // let auth = login(form.email, form.password)
-            // if (auth) {
-            //     console.log('Login successful');
-            //     navigate('/profile')
-            // }
-            // else { alert("Authentication Failed") }
+            let auth = login(form.email, form.password)
+            if (auth) {
+                console.log('Login successful');
+                navigate('/profile')
+            }
+            else { alert("Authentication Failed") }
         }
     };
-
-    /*
-        const [cards, setCards] = useState([{ id: 1, value: "" }]);
-    
-        //Handle input change with auto-formatting
-        const handleCardChange = (id, value) => {
-            // Allow only digits and format input as "xxxx-xxxx-xxxx-xxxx"
-            let sanitizedValue = value.replace(/\D/g, ""); // Remove non-digits
-            sanitizedValue = sanitizedValue
-                .match(/.{1,4}/g)
-                ?.join("-")
-                .slice(0, 19) || ""; // Add hyphens and limit to 16 digits
-    
-            setCards((prev) =>
-                prev.map((card) =>
-                    card.id === id ? { ...card, value: sanitizedValue } : card
-                )
-            );
-        };
-    
-        // Validate card entries
-        const validateCards = () => {
-            const newErrors = {};
-            const cardValues = cards.map((card) => card.value);
-    
-            cards.forEach((card) => {
-                const value = card.value.replace(/-/g, ""); // Remove hyphens for validation
-                if (!/^\d{16}$/.test(value)) {
-                    newErrors[card.id] = "Card number must be 16 digits.";
-                } else if (value === "0000000000000000") {
-                    newErrors[card.id] = "Card number cannot be all zeros.";
-                } else if (cardValues.filter((v) => v === card.value).length > 1) {
-                    newErrors[card.id] = "Card number must be unique.";
-                }
-            });
-    
-            setForm({ ...form, ["creditCards"]: cardValues });
-    
-            setErrors(newErrors);
-            return Object.keys(newErrors).length === 0;
-        };
-    
-        // Add a new card input
-        const addCard = () => {
-            setCards((prev) => [
-                ...prev,
-                { id: Date.now(), value: "" }, // Unique ID for new card
-            ]);
-        };
-    
-        // Remove a specific card input
-        const removeCard = (id) => {
-            setCards((prev) => prev.filter((card) => card.id !== id));
-            setErrors((prevErrors) => {
-                // eslint-disable-next-line no-unused-vars
-                const { [id]: _, ...remainingErrors } = prevErrors; // Remove errors for the removed card
-                return remainingErrors;
-            });
-        };
-    */
 
     return (
         <ThemeProvider theme={defaultTheme}>
             <Container component="main" maxWidth="xs">
+                <Snackbar
+                    open={openSnackbar}
+                    anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                >
+                    <Alert severity="success" sx={{ width: "100%" }}>
+                        Registered Successfully
+                    </Alert>
+                </Snackbar>
+                <Snackbar
+                    open={openSnackbar}
+                    anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                    sx={{ marginTop: 8 }}
+                >
+                    <Alert severity="success" sx={{ width: "100%" }}>
+                        {`Welcome ${form.username}!`}
+                    </Alert>
+                </Snackbar>
+
                 <CssBaseline />
                 <Box
                     sx={{
@@ -277,8 +273,10 @@ export default function SignUp() {
                             autoFocus
                             value={form.email}
                             onChange={handleChange}
+                            error={!!errors["email"]}
+                            helperText={errors["email"]}
                         />
-                        {emailError && <Alert variant="filled" severity="error">{emailError}</Alert>}
+                        {/* {errors["email"] && <Alert variant="filled" severity="error">{errors["email"]}</Alert>} */}
                         <TextField
                             margin="normal"
                             required
@@ -291,9 +289,11 @@ export default function SignUp() {
                             autoComplete="username"
                             value={form.username}
                             onChange={handleChange}
+                            error={!!errors["username"]}
+                            helperText={errors["username"]}
                             autoFocus
                         />
-                        {usernameError && <Alert variant="filled" severity="error">{usernameError}</Alert>}
+                        {/* {errors["username"] && <Alert variant="filled" severity="error">{errors["username"]}</Alert>} */}
                         <TextField
                             margin="normal"
                             required
@@ -306,8 +306,9 @@ export default function SignUp() {
                             autoComplete="current-password"
                             value={form.password}
                             onChange={handleChange}
+                            error={!!errors["password"]}
+                            helperText={errors["password"]}
                         />
-                        {passwordError && <Alert variant="filled" severity="error">{passwordError}</Alert>}
                         <TextField
                             required
                             label="Sex"
@@ -320,7 +321,7 @@ export default function SignUp() {
                         >
                             <MenuItem value="MALE">Male</MenuItem>
                             <MenuItem value="FEMALE">Female</MenuItem>
-                            <MenuItem value="TRANSGENDER">Transgender</MenuItem>
+                            <MenuItem value="OTHER">Other</MenuItem>
                             {/* <MenuItem value="Don't want to disclose">NA</MenuItem> */}
                         </TextField>
                         <TextField
@@ -331,47 +332,11 @@ export default function SignUp() {
                             type="date"
                             value={form.dob}
                             onChange={handleChange}
+                            error={!!errors["dob"]}
+                            helperText={errors["dob"]}
                             fullWidth
                             InputLabelProps={{ shrink: true }}
                         />
-                        {/* <Grid container spacing={0}>
-                            {cards.map((card, index) => (
-                                <Grid item size={12} key={card.id}>
-                                    <TextField
-                                        label={`Credit Card ${index + 1}`}
-                                        variant="outlined"
-                                        fullWidth
-                                        margin="normal"
-                                        value={card.value}
-                                        onChange={(e) => handleCardChange(card.id, e.target.value)}
-                                        error={!!errors[card.id]}
-                                        helperText={errors[card.id] || ""}
-                                        InputProps={{
-                                            endAdornment: (
-                                                <InputAdornment position="end">
-                                                    <IconButton
-                                                        onClick={() => removeCard(card.id)}
-                                                        color="error"
-                                                        edge="end"
-                                                    >
-                                                        <RemoveIcon />
-                                                    </IconButton>
-                                                </InputAdornment>
-                                            ),
-                                        }}
-                                    />
-                                </Grid>
-                            ))}
-                            <Grid item size={12}>
-                                <Typography variant="body1" component="span" sx={{ ml: 1 }}>
-                                    Add new credit card
-                                </Typography>
-                                <IconButton onClick={addCard} type="button" color="primary" sx={{ ml: 1 }}>
-                                    <AddIcon />
-                                </IconButton>
-                            </Grid>
-                        </Grid> */}
-
                         <Typography style={{ textAlign: "left" }}>Address</Typography>
                         <Grid container spacing={2}>
                             <Grid item size={12} sm={8}>
@@ -410,6 +375,8 @@ export default function SignUp() {
                                     name="address.pin"
                                     value={form.address.pin}
                                     onChange={handleChange}
+                                    error={!!errors["address.pin"]}
+                                    helperText={errors["address.pin"]}
                                     fullWidth
                                     required
                                 />
@@ -432,20 +399,6 @@ export default function SignUp() {
                                     onChange={handleChange}
                                     fullWidth
                                     required
-                                />
-                            </Grid>
-
-                            {/* Active Checkbox */}
-                            <Grid item size={12}>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            name="active"
-                                            checked={form.active}
-                                            onChange={handleChange}
-                                        />
-                                    }
-                                    label="Active"
                                 />
                             </Grid>
                         </Grid>

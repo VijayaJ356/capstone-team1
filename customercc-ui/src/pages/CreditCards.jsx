@@ -23,7 +23,7 @@ const CreditCards = () => {
     const [userCardslist, setUserCardsList] = useState([]);
     const [userCardsData, setUserCardsData] = useState({
         username: loggedInUser?.username || "",
-        nameOnTheCard: loggedInUser?.name || "",
+        nameOnTheCard: loggedInUser ? `${loggedInUser.name.first} ${loggedInUser.name.last}` : "",
         credit_card: [],
     });
     const [openAddCard, setOpenAddCard] = useState(false);
@@ -52,7 +52,6 @@ const CreditCards = () => {
             }
         }
     }, [loggedInUser]); // Trigger only when `loggedInUser` or `cards` change
-
 
     const handleAddCard = (newCard) => {
         // Create new card data object
@@ -196,7 +195,7 @@ const CreditCards = () => {
                                 <img src={getCardIcon(card.wireTransactionVendor)} alt={card.wireTransactionVendor} align="" />
 
                                 {/* Card Status */}
-                                <span style={{ position: "inline-flex", float: "right", align: "center", "font-weight": "bold", color: `${card.status === 'enabled' ? 'lightgreen' : 'red'}` }} >
+                                <span style={{ position: "inline-flex", float: "right", align: "center", color: `${card.status === 'enabled' ? 'lightgreen' : 'red'}` }} >
                                     {card.status.charAt(0).toUpperCase() + card.status.slice(1)}
 
                                     <IconButton
@@ -289,7 +288,7 @@ const CreditCards = () => {
                                     textAlign: "left",
                                 }}
                             >
-                                {userCardsData.nameOnTheCard}
+                                {`${userCardsData.nameOnTheCard.first} ${userCardsData.nameOnTheCard.last}`}
                             </Typography>
                         </CardContent>
                     </Card>

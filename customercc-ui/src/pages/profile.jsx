@@ -4,18 +4,19 @@ import { useAuth } from '../handlers/AuthContext';
 import { Box, TextField, Button, Typography, Grid } from "@mui/material";
 
 const UserProfile = () => {
- 
+
   const navigate = useNavigate()
   const { loggedInUser } = useAuth();
- 
+
   function routetocards() {
     navigate('/cards')
   }
- 
+
   // Initial User Data (can be fetched from API)
   const [userData, setUserData] = useState(loggedInUser);
-
+  const [errors, setErrors] = useState({})
   const [isEditing, setIsEditing] = useState(false);
+
 
   // Handler to toggle editing mode
   const toggleEdit = () => {
@@ -25,11 +26,33 @@ const UserProfile = () => {
   // Handler to update field values
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setUserData((prev) => ({ ...prev, [name]: value }));
+    if (name.includes("address.")) {
+      const [, key] = name.split(".");
+      var formattedvalue = value
+      if (key == "pin") {
+        formattedvalue = value
+          .replace(/\D/g, "") // Remove Non-Digits
+          .slice(0, 6);
+        if (formattedvalue.length < 6) {
+          errors[name] = 'Please enter min 6 digits'
+        }
+      }
+      setUserData((prev) => ({
+        ...prev,
+        address: { ...prev.address, [key]: formattedvalue },
+      }));
+    }
+    else {
+      setUserData((prev) => ({ ...prev, [name]: value }));
+    }
+    setErrors(errors)
+
   };
 
   // Handler to save changes
   const saveChanges = () => {
+    // handleRemovePassword()
+    delete userData.password;
     console.log("Updated User Data:", userData);
 
     // Send data to API
@@ -55,7 +78,7 @@ const UserProfile = () => {
           <TextField
             label="Name"
             name="name"
-            value={userData.name}
+            value={`${userData.name.first} ${userData.name.last}`}
             onChange={handleInputChange}
             fullWidth
             disabled
@@ -101,14 +124,64 @@ const UserProfile = () => {
             onChange={handleInputChange}
             fullWidth
             disabled
-            helperText="Username cannot be changed"
+          // helperText="Username cannot be changed"
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} label="Address">
           <TextField
-            label="Address"
-            name="address"
-            value={userData.address}
+            label="House No."
+            name="address.houseNo"
+            value={userData.address.houseNo}
+            onChange={handleInputChange}
+            fullWidth
+            disabled={!isEditing}
+          />
+        </Grid>
+        <Grid item xs={12} label="Address">
+          <TextField
+            label="Street"
+            name="address.street"
+            value={userData.address.street}
+            onChange={handleInputChange}
+            fullWidth
+            disabled={!isEditing}
+          />
+        </Grid>
+        <Grid item xs={12} label="Address">
+          <TextField
+            label="City"
+            name="address.city"
+            value={userData.address.city}
+            onChange={handleInputChange}
+            fullWidth
+            disabled={!isEditing}
+          />
+        </Grid>
+        <Grid item xs={12} label="Address">
+          <TextField
+            label="PIN"
+            name="address.pin"
+            value={userData.address.pin}
+            onChange={handleInputChange}
+            fullWidth
+            disabled={!isEditing}
+          />
+        </Grid>
+        <Grid item xs={12} label="Address">
+          <TextField
+            label="State"
+            name="address.state"
+            value={userData.address.state}
+            onChange={handleInputChange}
+            fullWidth
+            disabled={!isEditing}
+          />
+        </Grid>
+        <Grid item xs={12} label="Address">
+          <TextField
+            label="Country"
+            name="address.country"
+            value={userData.address.country}
             onChange={handleInputChange}
             fullWidth
             disabled={!isEditing}
@@ -135,7 +208,7 @@ const UserProfile = () => {
     </Box>
   );
 };
- 
+
 //modified code
 
 export default UserProfile;

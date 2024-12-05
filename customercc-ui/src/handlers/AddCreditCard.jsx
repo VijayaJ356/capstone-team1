@@ -17,7 +17,7 @@ const AddCreditCard = ({ open, onClose, onAddCard, existingCards }) => {
     const { loggedInUser } = useAuth();
     const [formData, setFormData] = useState({
         cardNumber: "",
-        nameOnCard: loggedInUser.name,
+        nameOnCard: `${loggedInUser.name.first} ${loggedInUser.name.last}`,
         valid_from: "",
         expiry: "",
         cvv: "",
@@ -117,9 +117,10 @@ const AddCreditCard = ({ open, onClose, onAddCard, existingCards }) => {
         if (validateForm()) {
             const plainCardNumber = formData.cardNumber.replace(/-/g, " ");
             onAddCard({ ...formData, cardNumber: plainCardNumber });
+
             setFormData({
                 cardNumber: "",
-                nameOnCard: loggedInUser.name,
+                nameOnCard: `${loggedInUser.name.first} ${loggedInUser.name.last}`,
                 valid_from: "",
                 expiry: "",
                 cvv: "",
