@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../handlers/AuthContext';
 import { Box, TextField, Button, Typography, Grid } from "@mui/material";
- 
+
 const UserProfile = () => {
  
   const navigate = useNavigate()
@@ -14,24 +14,24 @@ const UserProfile = () => {
  
   // Initial User Data (can be fetched from API)
   const [userData, setUserData] = useState(loggedInUser);
- 
+
   const [isEditing, setIsEditing] = useState(false);
- 
+
   // Handler to toggle editing mode
   const toggleEdit = () => {
     setIsEditing((prev) => !prev);
   };
- 
+
   // Handler to update field values
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setUserData((prev) => ({ ...prev, [name]: value }));
   };
- 
+
   // Handler to save changes
   const saveChanges = () => {
     console.log("Updated User Data:", userData);
- 
+
     // Send data to API
     // fetch("https://api.example.com/updateUser", {
     //     method: "POST",
@@ -41,10 +41,10 @@ const UserProfile = () => {
     //     .then((response) => response.json())
     //     .then((data) => console.log("Update successful:", data))
     //     .catch((error) => console.error("Error updating user:", error));
- 
+
     setIsEditing(false);
   };
- 
+
   return (
     <Box sx={{ maxWidth: 500, margin: "auto", padding: 3, border: "1px solid #ccc", borderRadius: 2, marginTop: 10 }}>
       <Typography variant="h4" gutterBottom>
@@ -137,5 +137,5 @@ const UserProfile = () => {
 };
  
 //modified code
- 
+
 export default UserProfile;

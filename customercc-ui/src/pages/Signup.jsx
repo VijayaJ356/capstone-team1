@@ -1,17 +1,14 @@
 import { useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
-import { Button, TextField, Typography, MenuItem, Box, IconButton, InputAdornment } from '@mui/material'
+import { Button, TextField, Typography, MenuItem, Box, FormControlLabel, Checkbox, Container, Alert, Avatar, CssBaseline } from '@mui/material'
 import Grid from '@mui/material/Grid2'
-import Avatar from '@mui/material/Avatar';
-import CssBaseline from '@mui/material/CssBaseline';
-// import Link from '@mui/material/Link';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Container from '@mui/material/Container';
-import Alert from '@mui/material/Alert';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useAuth } from '../handlers/AuthContext';
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove"
+// import AddIcon from "@mui/icons-material/Add";
+// import RemoveIcon from "@mui/icons-material/Remove"
+
+import axios from "axios";
 
 import { users } from '../data/users'
 
@@ -21,12 +18,68 @@ export default function SignUp() {
     const navigate = useNavigate();
     const { loggedInUser } = useAuth();
 
-    if (loggedInUser) { navigate('/account') }
+    if (loggedInUser) { navigate('/profile') }
 
     // States for form input values and error messages
+    // const [errors, setErrors] = useState({});
     const [emailError, setEmailError] = useState('');
     const [usernameError, setUsernameError] = useState('');
     const [passwordError, setPasswordError] = useState('');
+
+    const [form, setForm] = useState({
+        name: {
+            first: '',
+            last: ''
+        },
+        email: '',
+        username: '',
+        password: '',
+        dob: null,
+        sex: '',
+        // creditCards: [],
+        customerId: "112",
+        address: {
+            houseNo: "",
+            street: "",
+            city: "",
+            pin: "",
+            state: "",
+            country: "",
+        },
+        active: false,
+    });
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+
+        // // Validate username length
+        // if (name === "username") {
+        //     if (value.length < 6) {
+        //         setErrors((prev) => ({ ...prev, username: "Username must be at least 6 characters." }));
+        //     } else {
+        //         setErrors((prev) => ({ ...prev, username: "" }));
+        //     }
+        // }
+
+        // Update form data
+        if (name.includes("name.")) {
+            const [, key] = name.split(".");
+            setForm((prev) => ({
+                ...prev,
+                name: { ...prev.name, [key]: value },
+            }));
+        } else if (name.includes("address.")) {
+            const [, key] = name.split(".");
+            setForm((prev) => ({
+                ...prev,
+                address: { ...prev.address, [key]: value },
+            }));
+        } else if (name === "active") {
+            setForm((prev) => ({ ...prev, active: e.target.checked }));
+        }
+        else {
+            setForm({ ...form, [e.target.name]: e.target.value });
+        }
+    };
 
     // Validation functions
     const validateUserName = (username) => {
@@ -44,7 +97,7 @@ export default function SignUp() {
         return passwordRegex.test(password);
     };
 
-    const handleSignUp = (e) => {
+    const handleSignUp = async (e) => {
         e.preventDefault();
         let valid = true;
 
@@ -69,11 +122,11 @@ export default function SignUp() {
             // Check if username already exists
             const usernamematch = users.some((u) => u.username == username);
             const emailmatch = users.some((u) => u.email == email);
-            if (usernamematch) {
-                setUsernameError('User Already Present');
-                valid = false;
-            } else if (emailmatch) {
+            if (emailmatch) {
                 setEmailError('Email Already Present');
+                valid = false;
+            } else if (usernamematch) {
+                setUsernameError('User Already Present');
                 valid = false;
             } else {
                 setUsernameError('');
@@ -88,32 +141,33 @@ export default function SignUp() {
             setPasswordError('');
         }
 
-        if (!validateCards()) {
-            valid = false;
-        }
+        // if (!validateCards()) {
+        //     valid = false;
+        // }
 
         if (valid) {
             console.log('Registered successfully');
             alert('Registered successfully');
 
+            // setForm({ ...form, ["sex"]: form.sex.toUpperCase() });
+
+            console.log(form)
+
             // Add the new user to the users array
-            const userData = {
-                username: form.username,
-                password: form.password,
-                credit_card: form.creditCards, // Initially empty
-                name: `${form.name.firstname} ${form.name.lastname} `,
-                dob: form.dob,
-                sex: form.sex.toUpperCase(), // Ensure consistent case
-                email: form.email,
+            users.push(form);
+
+            try {
+                const response = await axios.post("http://localhost:9095/api/customer/register", form);
+                console.log("Customer registered successfully:", response.data);
+            } catch (error) {
+                console.error("Error registering customer:", error);
             }
 
-            users.push(userData);
-
             // Send data to API
-            // fetch("https://api.example.com/api/customer/register", {
+            // fetch("http://localhost:9095/api/customer/register", {
             //     method: "POST",
             //     headers: { "Content-Type": "application/json" },
-            //     body: JSON.stringify(userData),
+            //     body: JSON.stringify(form),
             // })
             //     .then((response) => response.json())
             //     .then((data) => console.log("Update successful:", data))
@@ -123,101 +177,71 @@ export default function SignUp() {
             // let auth = login(form.email, form.password)
             // if (auth) {
             //     console.log('Login successful');
-            //     navigate('/account')
+            //     navigate('/profile')
             // }
             // else { alert("Authentication Failed") }
         }
     };
 
-    const [form, setForm] = useState({
-        name: {
-            firstname: '',
-            lastname: ''
-        },
-        email: '',
-        username: '',
-        password: '',
-        dob: null,
-        sex: '',
-        creditCards: [],
-    });
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        if (name === "username") {
-            const formattedValue = value
-                .slice(0, 6);
-            setForm({ ...form, [name]: formattedValue });
-        } else if (name == "firstname" || name == "lastname") {
-            setForm({
-                ...form, name: {
-                    ...form.name,
-                    [name]: value,
-                },
+    /*
+        const [cards, setCards] = useState([{ id: 1, value: "" }]);
+    
+        //Handle input change with auto-formatting
+        const handleCardChange = (id, value) => {
+            // Allow only digits and format input as "xxxx-xxxx-xxxx-xxxx"
+            let sanitizedValue = value.replace(/\D/g, ""); // Remove non-digits
+            sanitizedValue = sanitizedValue
+                .match(/.{1,4}/g)
+                ?.join("-")
+                .slice(0, 19) || ""; // Add hyphens and limit to 16 digits
+    
+            setCards((prev) =>
+                prev.map((card) =>
+                    card.id === id ? { ...card, value: sanitizedValue } : card
+                )
+            );
+        };
+    
+        // Validate card entries
+        const validateCards = () => {
+            const newErrors = {};
+            const cardValues = cards.map((card) => card.value);
+    
+            cards.forEach((card) => {
+                const value = card.value.replace(/-/g, ""); // Remove hyphens for validation
+                if (!/^\d{16}$/.test(value)) {
+                    newErrors[card.id] = "Card number must be 16 digits.";
+                } else if (value === "0000000000000000") {
+                    newErrors[card.id] = "Card number cannot be all zeros.";
+                } else if (cardValues.filter((v) => v === card.value).length > 1) {
+                    newErrors[card.id] = "Card number must be unique.";
+                }
             });
-        }
-        else {
-            setForm({ ...form, [e.target.name]: e.target.value });
-        }
-    };
-
-    const [cards, setCards] = useState([{ id: 1, value: "" }]);
-    const [errors, setErrors] = useState({});
-
-    // Handle input change with auto-formatting
-    const handleCardChange = (id, value) => {
-        // Allow only digits and format input as "xxxx-xxxx-xxxx-xxxx"
-        let sanitizedValue = value.replace(/\D/g, ""); // Remove non-digits
-        sanitizedValue = sanitizedValue
-            .match(/.{1,4}/g)
-            ?.join("-")
-            .slice(0, 19) || ""; // Add hyphens and limit to 16 digits
-
-        setCards((prev) =>
-            prev.map((card) =>
-                card.id === id ? { ...card, value: sanitizedValue } : card
-            )
-        );
-    };
-
-    // Validate card entries
-    const validateCards = () => {
-        const newErrors = {};
-        const cardValues = cards.map((card) => card.value);
-
-        cards.forEach((card) => {
-            const value = card.value.replace(/-/g, ""); // Remove hyphens for validation
-            if (!/^\d{16}$/.test(value)) {
-                newErrors[card.id] = "Card number must be 16 digits.";
-            } else if (value === "0000000000000000") {
-                newErrors[card.id] = "Card number cannot be all zeros.";
-            } else if (cardValues.filter((v) => v === card.value).length > 1) {
-                newErrors[card.id] = "Card number must be unique.";
-            }
-        });
-
-        setForm({ ...form, ["creditCards"]: cardValues });
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
-
-    // Add a new card input
-    const addCard = () => {
-        setCards((prev) => [
-            ...prev,
-            { id: Date.now(), value: "" }, // Unique ID for new card
-        ]);
-    };
-
-    // Remove a specific card input
-    const removeCard = (id) => {
-        setCards((prev) => prev.filter((card) => card.id !== id));
-        setErrors((prevErrors) => {
-            // eslint-disable-next-line no-unused-vars
-            const { [id]: _, ...remainingErrors } = prevErrors; // Remove errors for the removed card
-            return remainingErrors;
-        });
-    };
+    
+            setForm({ ...form, ["creditCards"]: cardValues });
+    
+            setErrors(newErrors);
+            return Object.keys(newErrors).length === 0;
+        };
+    
+        // Add a new card input
+        const addCard = () => {
+            setCards((prev) => [
+                ...prev,
+                { id: Date.now(), value: "" }, // Unique ID for new card
+            ]);
+        };
+    
+        // Remove a specific card input
+        const removeCard = (id) => {
+            setCards((prev) => prev.filter((card) => card.id !== id));
+            setErrors((prevErrors) => {
+                // eslint-disable-next-line no-unused-vars
+                const { [id]: _, ...remainingErrors } = prevErrors; // Remove errors for the removed card
+                return remainingErrors;
+            });
+        };
+    */
 
     return (
         <ThemeProvider theme={defaultTheme}>
@@ -238,8 +262,8 @@ export default function SignUp() {
                         Sign Up
                     </Typography>
                     <Box component="form" onSubmit={handleSignUp} validate="true" sx={{ mt: 1 }}>
-                        <TextField required label="First Name" name="firstname" fullWidth margin="normal" onChange={handleChange} autoFocus />
-                        <TextField required label="Last Name" name="lastname" fullWidth margin="normal" onChange={handleChange} autoFocus />
+                        <TextField required label="First Name" name="name.first" value={form.name.first} fullWidth margin="normal" onChange={handleChange} autoFocus />
+                        <TextField required label="Last Name" name="name.last" value={form.name.last} fullWidth margin="normal" onChange={handleChange} autoFocus />
                         <TextField
                             margin="normal"
                             required
@@ -294,9 +318,10 @@ export default function SignUp() {
                             value={form.sex}
                             onChange={handleChange}
                         >
-                            <MenuItem value="Male">Male</MenuItem>
-                            <MenuItem value="Female">Female</MenuItem>
-                            <MenuItem value="Don't want to disclose">NA</MenuItem>
+                            <MenuItem value="MALE">Male</MenuItem>
+                            <MenuItem value="FEMALE">Female</MenuItem>
+                            <MenuItem value="TRANSGENDER">Transgender</MenuItem>
+                            {/* <MenuItem value="Don't want to disclose">NA</MenuItem> */}
                         </TextField>
                         <TextField
                             required
@@ -309,17 +334,7 @@ export default function SignUp() {
                             fullWidth
                             InputLabelProps={{ shrink: true }}
                         />
-                        {/* <TextField
-                            required
-                            label="Credit Card Numbers"
-                            name="creditCards"
-                            multiline
-                            fullWidth
-                            margin="normal"
-                            onChange={handleChange}
-                        /> */}
-                        {/* <CreditCardForm /> */}
-                        <Grid container spacing={0}>
+                        {/* <Grid container spacing={0}>
                             {cards.map((card, index) => (
                                 <Grid item size={12} key={card.id}>
                                     <TextField
@@ -354,6 +369,84 @@ export default function SignUp() {
                                 <IconButton onClick={addCard} type="button" color="primary" sx={{ ml: 1 }}>
                                     <AddIcon />
                                 </IconButton>
+                            </Grid>
+                        </Grid> */}
+
+                        <Typography style={{ textAlign: "left" }}>Address</Typography>
+                        <Grid container spacing={2}>
+                            <Grid item size={12} sm={8}>
+                                <TextField
+                                    label="House No"
+                                    name="address.houseNo"
+                                    value={form.address.houseNo}
+                                    onChange={handleChange}
+                                    fullWidth
+                                    required
+                                />
+                            </Grid>
+                            <Grid item size={12} sm={8}>
+                                <TextField
+                                    label="Street"
+                                    name="address.street"
+                                    value={form.address.street}
+                                    onChange={handleChange}
+                                    fullWidth
+                                    required
+                                />
+                            </Grid>
+                            <Grid item size={12} sm={6}>
+                                <TextField
+                                    label="City"
+                                    name="address.city"
+                                    value={form.address.city}
+                                    onChange={handleChange}
+                                    fullWidth
+                                    required
+                                />
+                            </Grid>
+                            <Grid item size={12} sm={6}>
+                                <TextField
+                                    label="PIN"
+                                    name="address.pin"
+                                    value={form.address.pin}
+                                    onChange={handleChange}
+                                    fullWidth
+                                    required
+                                />
+                            </Grid>
+                            <Grid item size={12} sm={6}>
+                                <TextField
+                                    label="State"
+                                    name="address.state"
+                                    value={form.address.state}
+                                    onChange={handleChange}
+                                    fullWidth
+                                    required
+                                />
+                            </Grid>
+                            <Grid item size={12} sm={6}>
+                                <TextField
+                                    label="Country"
+                                    name="address.country"
+                                    value={form.address.country}
+                                    onChange={handleChange}
+                                    fullWidth
+                                    required
+                                />
+                            </Grid>
+
+                            {/* Active Checkbox */}
+                            <Grid item size={12}>
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            name="active"
+                                            checked={form.active}
+                                            onChange={handleChange}
+                                        />
+                                    }
+                                    label="Active"
+                                />
                             </Grid>
                         </Grid>
                         <Button
