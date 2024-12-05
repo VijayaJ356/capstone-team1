@@ -4,14 +4,14 @@ import { useAuth } from '../handlers/AuthContext';
 import { Box, TextField, Button, Typography, Grid } from "@mui/material";
 
 const UserProfile = () => {
-
+ 
   const navigate = useNavigate()
   const { loggedInUser } = useAuth();
-
+ 
   function routetocards() {
     navigate('/cards')
   }
-
+ 
   // Initial User Data (can be fetched from API)
   const [userData, setUserData] = useState(loggedInUser);
 
@@ -58,7 +58,7 @@ const UserProfile = () => {
             value={userData.name}
             onChange={handleInputChange}
             fullWidth
-            disabled={!isEditing}
+            disabled
           />
         </Grid>
         <Grid item xs={12}>
@@ -79,7 +79,7 @@ const UserProfile = () => {
             value={userData.dob}
             onChange={handleInputChange}
             fullWidth
-            disabled={!isEditing}
+            disabled
             InputLabelProps={{ shrink: true }}
           />
         </Grid>
@@ -90,7 +90,7 @@ const UserProfile = () => {
             value={userData.sex}
             onChange={handleInputChange}
             fullWidth
-            disabled={!isEditing}
+            disabled
           />
         </Grid>
         <Grid item xs={12}>
@@ -135,7 +135,7 @@ const UserProfile = () => {
     </Box>
   );
 };
-
+ 
 //modified code
 
 export default UserProfile;
