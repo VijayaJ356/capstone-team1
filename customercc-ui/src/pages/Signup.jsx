@@ -37,7 +37,7 @@ export default function SignUp() {
         dob: null,
         sex: '',
         // creditCards: [],
-        customerId: "",
+        customerId: "112",
         address: {
             houseNo: "",
             street: "",
