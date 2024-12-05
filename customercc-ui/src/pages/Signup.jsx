@@ -28,8 +28,8 @@ export default function SignUp() {
 
     const [form, setForm] = useState({
         name: {
-            firstname: '',
-            lastname: ''
+            first: '',
+            last: ''
         },
         email: '',
         username: '',
@@ -149,6 +149,8 @@ export default function SignUp() {
             console.log('Registered successfully');
             alert('Registered successfully');
 
+            // setForm({ ...form, ["sex"]: form.sex.toUpperCase() });
+
             console.log(form)
 
             // Add the new user to the users array
@@ -260,8 +262,8 @@ export default function SignUp() {
                         Sign Up
                     </Typography>
                     <Box component="form" onSubmit={handleSignUp} validate="true" sx={{ mt: 1 }}>
-                        <TextField required label="First Name" name="name.firstname" value={form.name.firstname} fullWidth margin="normal" onChange={handleChange} autoFocus />
-                        <TextField required label="Last Name" name="name.lastname" value={form.name.lastname} fullWidth margin="normal" onChange={handleChange} autoFocus />
+                        <TextField required label="First Name" name="name.first" value={form.name.first} fullWidth margin="normal" onChange={handleChange} autoFocus />
+                        <TextField required label="Last Name" name="name.last" value={form.name.last} fullWidth margin="normal" onChange={handleChange} autoFocus />
                         <TextField
                             margin="normal"
                             required
@@ -316,9 +318,10 @@ export default function SignUp() {
                             value={form.sex}
                             onChange={handleChange}
                         >
-                            <MenuItem value="Male">Male</MenuItem>
-                            <MenuItem value="Female">Female</MenuItem>
-                            <MenuItem value="Don't want to disclose">NA</MenuItem>
+                            <MenuItem value="MALE">Male</MenuItem>
+                            <MenuItem value="FEMALE">Female</MenuItem>
+                            <MenuItem value="TRANSGENDER">Transgender</MenuItem>
+                            {/* <MenuItem value="Don't want to disclose">NA</MenuItem> */}
                         </TextField>
                         <TextField
                             required
