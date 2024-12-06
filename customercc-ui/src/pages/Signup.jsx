@@ -77,9 +77,15 @@ export default function SignUp() {
         // Update form data
         if (name.includes("name.")) {
             const [, key] = name.split(".");
+            formattedvalue = value.replace(/[^a-zA-Z]/g, "");    // Remove any non-alphabets
+
+            if (!(/^(?=.{6,})/.test(formattedvalue))) {
+                errors[name] = 'Please enter min 6 chars'
+            }
+
             setForm((prev) => ({
                 ...prev,
-                name: { ...prev.name, [key]: value },
+                name: { ...prev.name, [key]: formattedvalue },
             }));
         }
         else if (name === "email") {
@@ -258,8 +264,14 @@ export default function SignUp() {
                         Sign Up
                     </Typography>
                     <Box component="form" onSubmit={handleSignUp} validate="true" sx={{ mt: 1 }}>
-                        <TextField required label="First Name" name="name.first" value={form.name.first} fullWidth margin="normal" onChange={handleChange} autoFocus />
-                        <TextField required label="Last Name" name="name.last" value={form.name.last} fullWidth margin="normal" onChange={handleChange} autoFocus />
+                        <TextField required label="First Name" name="name.first" value={form.name.first} fullWidth margin="normal" onChange={handleChange}
+                            error={!!errors["name.first"]}
+                            helperText={errors["name.first"]}
+                            autoFocus />
+                        <TextField required label="Last Name" name="name.last" value={form.name.last} fullWidth margin="normal" onChange={handleChange}
+                            error={!!errors["name.last"]}
+                            helperText={errors["name.last"]}
+                            autoFocus />
                         <TextField
                             margin="normal"
                             required

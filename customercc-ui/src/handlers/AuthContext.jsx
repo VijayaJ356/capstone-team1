@@ -19,6 +19,7 @@ export const AuthProvider = ({ children }) => {
     }, [isAuthenticated]);
 
     const login = (username, password) => {
+        // API Call for User Login
         const user = users.find((u) => u.email === username);
         const pass = users.find((u) => u.password === password);
         if (user) {
