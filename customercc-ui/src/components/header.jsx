@@ -15,7 +15,7 @@ const Header = () => {
             <Toolbar >
                 {/* Left side: App name or logo */}
                 <Typography variant="h5" sx={{ flexGrow: 1 }}>
-                    <Button size="large" color="inherit" component={Link} to="/home">
+                    <Button size="large" color="inherit" component={Link} to="/home" sx={{ fontSize: { xs: ".8rem", sm: "1rem" } }}>
                         Credit Card Manager
                     </Button>
                 </Typography>
@@ -33,13 +33,13 @@ const Header = () => {
                         </>
                     ) : (
                         <>
-                            <Typography variant="body1" color="inherit" sx={{ marginRight: 2 }}>
-                                Welcome, {loggedInUser?.name.first}
+                            <Typography variant="body1" color="inherit" sx={{ marginRight: 2, fontSize: { xs: ".9rem", sm: "1rem" } }}>
+                                Welcome, {loggedInUser.name.first ? loggedInUser.name.first : loggedInUser.name}
                             </Typography>
-                            <Button color="inherit" onClick={routetoprofile}>
+                            <Button color="inherit" onClick={routetoprofile} sx={{ fontSize: { xs: ".8rem", sm: "1rem" } }}>
                                 Profile
                             </Button>
-                            <Button color="inherit" onClick={logout}>
+                            <Button color="inherit" onClick={logout} sx={{ fontSize: { xs: ".8rem", sm: "1rem" } }}>
                                 Logout
                             </Button>
 

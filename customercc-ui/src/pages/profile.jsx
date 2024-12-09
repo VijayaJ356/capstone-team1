@@ -78,7 +78,7 @@ const UserProfile = () => {
           <TextField
             label="Name"
             name="name"
-            value={`${userData.name.first} ${userData.name.last}`}
+            value={userData.name.first ? `${userData.name.first} ${userData.name.last}` : userData.name}
             onChange={handleInputChange}
             fullWidth
             disabled
@@ -127,66 +127,70 @@ const UserProfile = () => {
           // helperText="Username cannot be changed"
           />
         </Grid>
-        <Grid item xs={12} label="Address">
-          <TextField
-            label="House No."
-            name="address.houseNo"
-            value={userData.address.houseNo}
-            onChange={handleInputChange}
-            fullWidth
-            disabled={!isEditing}
-          />
-        </Grid>
-        <Grid item xs={12} label="Address">
-          <TextField
-            label="Street"
-            name="address.street"
-            value={userData.address.street}
-            onChange={handleInputChange}
-            fullWidth
-            disabled={!isEditing}
-          />
-        </Grid>
-        <Grid item xs={12} label="Address">
-          <TextField
-            label="City"
-            name="address.city"
-            value={userData.address.city}
-            onChange={handleInputChange}
-            fullWidth
-            disabled={!isEditing}
-          />
-        </Grid>
-        <Grid item xs={12} label="Address">
-          <TextField
-            label="PIN"
-            name="address.pin"
-            value={userData.address.pin}
-            onChange={handleInputChange}
-            fullWidth
-            disabled={!isEditing}
-          />
-        </Grid>
-        <Grid item xs={12} label="Address">
-          <TextField
-            label="State"
-            name="address.state"
-            value={userData.address.state}
-            onChange={handleInputChange}
-            fullWidth
-            disabled={!isEditing}
-          />
-        </Grid>
-        <Grid item xs={12} label="Address">
-          <TextField
-            label="Country"
-            name="address.country"
-            value={userData.address.country}
-            onChange={handleInputChange}
-            fullWidth
-            disabled={!isEditing}
-          />
-        </Grid>
+        {userData.address && (
+          <Grid>
+            <Grid item xs={12} label="Address">
+              <TextField
+                label="House No."
+                name="address.houseNo"
+                value={userData.address.houseNo}
+                onChange={handleInputChange}
+                fullWidth
+                disabled={!isEditing}
+              />
+            </Grid>
+            <Grid item xs={12} label="Address">
+              <TextField
+                label="Street"
+                name="address.street"
+                value={userData.address.street}
+                onChange={handleInputChange}
+                fullWidth
+                disabled={!isEditing}
+              />
+            </Grid>
+            <Grid item xs={12} label="Address">
+              <TextField
+                label="City"
+                name="address.city"
+                value={userData.address.city}
+                onChange={handleInputChange}
+                fullWidth
+                disabled={!isEditing}
+              />
+            </Grid>
+            <Grid item xs={12} label="Address">
+              <TextField
+                label="PIN"
+                name="address.pin"
+                value={userData.address.pin}
+                onChange={handleInputChange}
+                fullWidth
+                disabled={!isEditing}
+              />
+            </Grid>
+            <Grid item xs={12} label="Address">
+              <TextField
+                label="State"
+                name="address.state"
+                value={userData.address.state}
+                onChange={handleInputChange}
+                fullWidth
+                disabled={!isEditing}
+              />
+            </Grid>
+            <Grid item xs={12} label="Address">
+              <TextField
+                label="Country"
+                name="address.country"
+                value={userData.address.country}
+                onChange={handleInputChange}
+                fullWidth
+                disabled={!isEditing}
+              />
+            </Grid>
+          </Grid>
+        )}
       </Grid>
       <Box sx={{ display: "flex", justifyContent: "space-between", marginTop: 3 }}>
         {!isEditing ? (

@@ -162,15 +162,15 @@ const CreditCards = () => {
                     flexWrap: "wrap",
                     gap: 2,
                     justifyContent: "center",
-                    padding: 3,
+                    padding: 0,
                 }}
             >
                 {userCardslist ? userCardslist.map((card, index) => (
                     <Card
                         key={index}
                         sx={{
-                            width: 400,
-                            height: 230,
+                            width: { xs: "100%", sm: 360 }, // 100% for mobile, fixed width for larger screens
+                            height: { xs: 200, sm: 230 },
                             position: "relative",
                             color: "#fff",
                             background: `linear-gradient(135deg, ${getwireTransactionVendorStyle(card.wireTransactionVendor)})`,
@@ -179,16 +179,14 @@ const CreditCards = () => {
                             display: "flex",
                             flexDirection: "column",
                             justifyContent: "space-between",
-                            padding: 1,
                         }}
                     >
                         <CardContent>
                             <Typography
                                 variant="body1"
                                 sx={{
-                                    fontSize: "1rem",
+                                    fontSize: { xs: ".9rem", sm: "1rem" },
                                     letterSpacing: 2,
-                                    marginTop: 0,
                                     textAlign: "left"
                                 }}>
                                 {/* Card Type */}
@@ -219,79 +217,72 @@ const CreditCards = () => {
                                 <Typography
                                     variant="body1"
                                     sx={{
-                                        fontSize: "1.2rem",
-                                        letterSpacing: 2,
-                                        marginTop: 1,
+                                        fontSize: { xs: ".9rem", sm: "1.1rem" },
+                                        letterSpacing: 3,
+                                        marginTop: { xs: ".5", sm: "1" },
                                         textAlign: "left"
                                     }}
                                 >
                                     {showCardNumber[index] ? card.cardNumber : `•••• •••• •••• ${card.cardNumber.slice(-4)}`}
                                     {/* •••• •••• •••• {card.cardNumber.slice(-4)} */}
+                                    <IconButton
+                                        onClick={() => toggleCardNumber(index)}
+                                        sx={{ color: "#fff" }}
+                                    >
+                                        {showCardNumber[index] ? (
+                                            <VisibilityOffIcon />
+                                        ) : (
+                                            <VisibilityIcon />
+                                        )}
+                                    </IconButton>
                                 </Typography>
-                                <IconButton
-                                    onClick={() => toggleCardNumber(index)}
-                                    sx={{ color: "#fff" }}
-                                >
-                                    {showCardNumber[index] ? (
-                                        <VisibilityOffIcon />
-                                    ) : (
-                                        <VisibilityIcon />
-                                    )}
-                                </IconButton>
+
                             </Box>
 
                             {/* Valid From and Expiry */}
-                            <Grid container spacing={1} sx={{ marginTop: 2 }}>
+                            <Grid container spacing={1} sx={{ marginTop: { xs: ".8", sm: "1.5" }, alignItems: "center", textAlign: "center" }}>
                                 <Grid item size={3}>
-                                    <Typography variant="body2" >Valid From</Typography>
-                                    <Typography variant="body1" sx={{ fontWeight: "bold", }}>{card.valid_from}</Typography>
+                                    <Typography variant="body2" sx={{ fontSize: { xs: ".8rem", sm: ".9rem" } }} >Valid From</Typography>
+                                    <Typography variant="body1" sx={{ fontWeight: "bold", fontSize: { xs: ".8rem", sm: ".9rem" } }}>{card.valid_from}</Typography>
                                 </Grid>
                                 <Grid item size={5}>
-                                    <Typography variant="body2">Expiry</Typography>
-                                    <Typography variant="body1" sx={{ fontWeight: "bold", }}>{card.expiry}</Typography>
+                                    <Typography variant="body2" sx={{ fontSize: { xs: ".8rem", sm: ".9rem" } }}>Expiry</Typography>
+                                    <Typography variant="body1" sx={{ fontWeight: "bold", fontSize: { xs: ".8rem", sm: ".9rem" } }}>{card.expiry}</Typography>
                                 </Grid>
 
                                 {/* CVV and Toggle Button */}
                                 <Grid item size={4}>
-                                    <Box
-                                        sx={{
-                                            display: "inline-flex",
-                                            justifyContent: "right",
-                                            alignItems: "center",
-                                            textAlign: "right",
-                                        }}
-                                    >
-                                        <Typography variant="body2" sx={{ fontWeight: "bold", }}>{"CVV : "}</Typography>
-                                        <Typography variant="body1" sx={{ marginLeft: 1, fontWeight: "bold" }}>
-                                            {showCVV[index] ? card.cvv : "***"}
-                                        </Typography>
+                                    <Typography variant="body2" sx={{ fontSize: { xs: ".8rem", sm: ".9rem" } }}>{"CVV"}
                                         <IconButton
                                             onClick={() => toggleCVV(index)}
-                                            sx={{ color: "#fff" }}
+                                            sx={{ color: "#fff", padding: "0px", marginLeft: "5px" }}
                                         >
                                             {showCVV[index] ? (
                                                 <VisibilityOffIcon />
                                             ) : (
                                                 <VisibilityIcon />
                                             )}
-                                        </IconButton>
-                                    </Box>
+                                        </IconButton></Typography>
+                                    <Typography variant="body1" sx={{ fontWeight: "bold", fontSize: { xs: ".8rem", sm: ".9rem" } }}>
+                                        {showCVV[index] ? card.cvv : "***"}
+                                    </Typography>
                                 </Grid>
                             </Grid>
                             <Typography
                                 variant="h6"
                                 sx={{
-                                    fontSize: "1.2rem",
+                                    fontSize: { xs: "1rem", sm: "1.2rem" },
                                     letterSpacing: 1,
-                                    marginTop: 3,
+                                    marginTop: 2,
                                     fontWeight: "bold",
                                     textAlign: "left",
                                 }}
                             >
-                                {`${userCardsData.nameOnTheCard.first} ${userCardsData.nameOnTheCard.last}`}
+                                {userCardsData.nameOnTheCard.first ? `${userCardsData.nameOnTheCard.first} ${userCardsData.nameOnTheCard.last}` : userCardsData.nameOnTheCard}
                             </Typography>
                         </CardContent>
                     </Card>
+
                 ))
                     : <Typography
                         variant="h6"
@@ -305,7 +296,7 @@ const CreditCards = () => {
                     > No Credit Cards Data Found</Typography>
                 }
             </Box >
-            <button onClick={() => setOpenAddCard(true)}>+ Add Credit Card</button>
+            <Button sx={{ marginTop: 2 }} onClick={() => setOpenAddCard(true)}>+ Add Credit Card</Button>
             <AddCreditCard
                 open={openAddCard}
                 onClose={() => setOpenAddCard(false)}

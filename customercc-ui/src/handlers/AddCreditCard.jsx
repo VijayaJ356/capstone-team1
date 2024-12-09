@@ -17,7 +17,7 @@ const AddCreditCard = ({ open, onClose, onAddCard, existingCards }) => {
     const { loggedInUser } = useAuth();
     const [formData, setFormData] = useState({
         cardNumber: "",
-        nameOnCard: `${loggedInUser.name.first} ${loggedInUser.name.last}`,
+        nameOnCard: loggedInUser.name.first ? `${loggedInUser.name.first} ${loggedInUser.name.last}` : loggedInUser.name,
         valid_from: "",
         expiry: "",
         cvv: "",
@@ -32,18 +32,37 @@ const AddCreditCard = ({ open, onClose, onAddCard, existingCards }) => {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
 
+        errors[name] = ""
+
         if (name === "cardNumber") {
             // Dynamically format the card number with dashes
             const formattedValue = value
                 .replace(/\D/g, "") // Remove non-digits
                 .replace(/(\d{4})(?=\d)/g, "$1-")
                 .slice(0, 19);
+
+            // Validate card number
+            const plainCardNumber = formData.cardNumber.replace(/-/g, " ");
+            console.log(plainCardNumber.length)
+            if (plainCardNumber === "0000 0000 0000 0000") {
+                errors.cardNumber = "Card number cannot be all zeros.";
+                // eslint-disable-next-line react/prop-types
+            } else if (existingCards.includes(plainCardNumber)) {
+                errors.cardNumber = "Card number must be unique.";
+            }
+
             setFormData({ ...formData, [name]: formattedValue });
         }
         else if (name === "cvv") {
             const formattedValue = value
                 .replace(/\D/g, "")
                 .slice(0, 3);
+
+            // Validate CVV
+            if (!/^\d{3}$/.test(formattedValue)) {
+                errors.cvv = "CVV must be exactly 3 digits.";
+            }
+
             setFormData({ ...formData, [name]: formattedValue });
         }
         else if (name === "valid_from" || name === "expiry") {
@@ -51,65 +70,53 @@ const AddCreditCard = ({ open, onClose, onAddCard, existingCards }) => {
                 .replace(/\D/g, "")
                 .replace(/(\d{2})(?=\d)/g, "$1/")
                 .slice(0, 5)
+
+            const currentDate = new Date();
+            const currentYear = currentDate.getFullYear() % 100; // Get last 2 digits of the year
+            const currentMonth = currentDate.getMonth() + 1;
+
+            // Validate Expiry
+            if (name === "expiry") {
+                if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(formattedValue)) {
+                    errors.expiry = "Expiry must be in MM/YY format.";
+                }
+
+                const [month, year] = formattedValue.split("/").map(Number);
+                if (year < currentYear || (year === currentYear && month < currentMonth)) {
+                    errors.expiry = "Card has expired."
+                }
+            }
+
+            // Validate Valid From
+            if (name === "valid_from") {
+                if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(formattedValue)) {
+                    errors.valid_from = "Expiry must be in MM/YY format.";
+                }
+
+                const [month, year] = formattedValue.split("/").map(Number);
+                console.log(year, currentYear, month, currentMonth)
+                if (year > currentYear || (year === currentYear && month > currentMonth)) {
+                    errors.valid_from = "Issue date must be in the past"
+                }
+            }
+
             setFormData({ ...formData, [name]: formattedValue });
+
         }
         else {
             setFormData({ ...formData, [name]: value });
         }
+
+        setErrors(errors)
     };
 
     const validateForm = () => {
-        const newErrors = {};
-
-        // Validate card number
-        const plainCardNumber = formData.cardNumber.replace(/-/g, " ");
-
-        if (plainCardNumber.length != 19) {
-            newErrors.cardNumber = "Card number must be exactly 16 digits.";
-        } else if (plainCardNumber === "0000 0000 0000 0000") {
-            newErrors.cardNumber = "Card number cannot be all zeros.";
-            // eslint-disable-next-line react/prop-types
-        } else if (existingCards.includes(plainCardNumber)) {
-            newErrors.cardNumber = "Card number must be unique.";
-        }
-
-        // Validate Name on Card
-        if (!formData.nameOnCard.trim()) {
-            newErrors.nameOnCard = "Name on card is required.";
-        }
-
-        if (formData.expiry.split("/")[1] < formData.valid_from.split("/")[1]) {
-            newErrors.valid_from = "Card expiry year must be greater than the issued year.";
-        }
-
-        // Validate Valid From
-        if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(formData.valid_from)) {
-            newErrors.valid_from = "Valid From must be in MM/YY format.";
-        }
-
-        // Validate Expiry
-        if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(formData.expiry)) {
-            newErrors.expiry = "Expiry must be in MM/YY format.";
-        }
-        const [month, year] = formData.expiry.split("/").map(Number);
-        const currentDate = new Date();
-        const currentYear = currentDate.getFullYear() % 100; // Get last 2 digits of the year
-        const currentMonth = currentDate.getMonth() + 1;
-        if (year < currentYear || (year === currentYear && month < currentMonth)) {
-            newErrors.expiry = "Card has expired."
-        }
-
-        // Validate CVV
-        if (!/^\d{3}$/.test(formData.cvv)) {
-            newErrors.cvv = "CVV must be exactly 3 digits.";
-        }
-
-        // Validate wireTransactionVendor
-        if (!formData.wireTransactionVendor) {
-            newErrors.wireTransactionVendor = "wireTransactionVendor selection is required.";
-        }
-
-        setErrors(newErrors);
+        const newErrors = {}
+        Object.keys(errors).forEach(item => {
+            if (errors[item] != "") {
+                newErrors[item] = errors[item]
+            }
+        })
         return Object.keys(newErrors).length === 0;
     };
 
@@ -120,7 +127,7 @@ const AddCreditCard = ({ open, onClose, onAddCard, existingCards }) => {
 
             setFormData({
                 cardNumber: "",
-                nameOnCard: `${loggedInUser.name.first} ${loggedInUser.name.last}`,
+                nameOnCard: loggedInUser.name.first ? `${loggedInUser.name.first} ${loggedInUser.name.last}` : loggedInUser.name,
                 valid_from: "",
                 expiry: "",
                 cvv: "",
@@ -189,6 +196,7 @@ const AddCreditCard = ({ open, onClose, onAddCard, existingCards }) => {
                         type="password"
                     />
                     <TextField
+                        required
                         fullWidth
                         margin="normal"
                         label="wireTransactionVendor"
