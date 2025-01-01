@@ -2,6 +2,7 @@ package com.example.customer_service.model;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.UUID;
 
 import org.bson.types.ObjectId;
 
@@ -13,7 +14,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 
-import jakarta.validation.constraints.AssertTrue;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -171,12 +172,16 @@ public class Customer {
 			this.dob = dob;
 			this.sex = sex;
 			this.email = email;
-			this.customerId = customerId;
+			this.customerId = generateCustomerId();
 			this.address = address;
 			this.active = active;
 			this.createdAt = createdAt;
 		}
 		
+	    private Integer generateCustomerId() {
+	        String uuid = UUID.randomUUID().toString();
+	        return uuid.hashCode() & Integer.MAX_VALUE; // Ensure positive hash
+	    }
 
 
 		
