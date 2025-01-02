@@ -43,7 +43,7 @@ const AddCreditCard = ({ open, onClose, onAddCard, existingCards }) => {
 
             // Validate card number
             const plainCardNumber = formData.cardNumber.replace(/-/g, " ");
-            console.log(plainCardNumber.length)
+
             if (plainCardNumber === "0000 0000 0000 0000") {
                 errors.cardNumber = "Card number cannot be all zeros.";
                 // eslint-disable-next-line react/prop-types
@@ -124,6 +124,8 @@ const AddCreditCard = ({ open, onClose, onAddCard, existingCards }) => {
         if (validateForm()) {
             const plainCardNumber = formData.cardNumber.replace(/-/g, " ");
             onAddCard({ ...formData, cardNumber: plainCardNumber });
+
+            console.log(formData)
 
             setFormData({
                 cardNumber: "",
