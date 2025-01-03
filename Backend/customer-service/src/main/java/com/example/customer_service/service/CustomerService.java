@@ -5,6 +5,7 @@ import java.time.Period;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 
@@ -26,13 +27,18 @@ public class CustomerService {
     
     private final CustomerRepository customerRepository;
     
+ 
+    
+    // Secret key for AES encryption (we need to fetch from secure storage)
+   // private final String SECRET_KEY = "yourSecretKey123";
+    
+    @Value("${encryption.secret.key}") // Fetch the secret key from application.properties
+    private String SECRET_KEY;
+    
     @Autowired
     public CustomerService(CustomerRepository customerRepository) {
         this.customerRepository = customerRepository;
     }
-    
-    // Secret key for AES encryption (we need to fetch from secure storage)
-    private final String SECRET_KEY = "yourSecretKey123";
 
     //private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 

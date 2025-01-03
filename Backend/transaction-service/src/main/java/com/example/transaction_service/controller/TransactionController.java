@@ -17,11 +17,9 @@ import com.example.transaction_service.model.Transaction;
 import com.example.transaction_service.model.TransactionInfo;
 import com.example.transaction_service.service.TransactionService;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 
 
-@Api(value = "Transaction Management System")
+
 @RestController
 @RequestMapping("/api/transaction")
 public class TransactionController {
@@ -29,7 +27,7 @@ public class TransactionController {
     @Autowired
     private TransactionService transactionService;
 
-    @ApiOperation(value = "List transactions based on description")
+  
     @GetMapping("/type/{transactionType}")
     public ResponseEntity<List<TransactionInfo>> getTransactionsByType(@PathVariable String transactionType) {
         List<TransactionInfo> transactions = transactionService.getTransactionsByType(transactionType);

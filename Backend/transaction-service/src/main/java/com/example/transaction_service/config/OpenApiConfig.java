@@ -1,4 +1,4 @@
-package com.example.customer_service.config;
+package com.example.transaction_service.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,8 +12,8 @@ public class OpenApiConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
-                .info(new Info().title("Customer Registration service")
+                .info(new Info().title("Transcation Service")
                                 .version("1.0.0")
-                                .description("API for Customer Registration Service"));
+                                .description("API for TRanscation Service"));
     }
 }

@@ -1,0 +1,1 @@
+API contract between the server and front-end devices

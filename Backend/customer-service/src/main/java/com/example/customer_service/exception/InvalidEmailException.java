@@ -2,7 +2,9 @@ package com.example.customer_service.exception;
 
 public class InvalidEmailException extends RuntimeException {
 
-    // Constructor that takes a custom message
+    private static final long serialVersionUID = -1557408869961154574L;
+
+	// Constructor that takes a custom message
     public InvalidEmailException(String message) {
         super(message);
     }
