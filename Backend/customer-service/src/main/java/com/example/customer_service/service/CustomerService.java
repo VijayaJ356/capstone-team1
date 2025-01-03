@@ -5,26 +5,44 @@ import java.time.Period;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+
 import com.example.customer_service.exception.InvalidCustomerIdException;
+import com.example.customer_service.exception.InvalidEmailException;
+import com.example.customer_service.model.Address;
 import com.example.customer_service.model.Customer;
 
 import com.example.customer_service.repository.CustomerRepository;
+import com.example.customer_service.utils.AESUtil;
 
 import jakarta.validation.Valid;
 
 
 
+
 @Service
 public class CustomerService {
+    
+    private final CustomerRepository customerRepository;
+    
+ 
+    
+    // Secret key for AES encryption (we need to fetch from secure storage)
+   // private final String SECRET_KEY = "yourSecretKey123";
+    
+    @Value("${encryption.secret.key}") // Fetch the secret key from application.properties
+    private String SECRET_KEY;
+    
     @Autowired
-    private CustomerRepository customerRepository;
+    public CustomerService(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
+    }
 
-    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    //private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public String registerCustomer(@Valid Customer customer) {
+    public String registerCustomer(@Valid Customer customer) throws Exception {
     	
 
         // Validate username
@@ -52,13 +70,12 @@ public class CustomerService {
             return "Please validate the data: Customer must be at least 18 years old";
         }
 
-        // Encrypt password
-        customer.setPassword(passwordEncoder.encode(customer.getPassword()));
+        String encryptedPassword = AESUtil.encrypt(customer.getPassword(), SECRET_KEY);
+        customer.setPassword(encryptedPassword);
+        customerRepository.save(customer);
         
         System.out.println("Customer Object: " + customer.toString());
 
-        // Save customer
-        customerRepository.save(customer);
         
 
         return "Customer Registered Successfully, please validate your credit card on first login";
@@ -69,23 +86,71 @@ public class CustomerService {
         return password.length() >= 6 && password.matches(".*[!@#$%^&*].*");
     }
     
-    public Customer getCustomerById(Integer customerId) throws InvalidCustomerIdException{
-    	Customer c1=null;
-        Optional<Customer> c=customerRepository.findByCustomerId(customerId);
-        if(c.isPresent())
-        {
-        	 c1=c.get();
-        	 System.out.println(c1);
+    public Customer getCustomerById(Integer customerId) throws InvalidCustomerIdException {
+         // Ensure this is valid
+        Optional<Customer> optionalCustomer = customerRepository.findByCustomerId(customerId);
+
+        if (optionalCustomer.isPresent()) {
+            Customer customer = optionalCustomer.get(); // Extract the Customer object
+            try {
+                // Decrypt the password and set it back to the customer object
+                String decryptedPassword = AESUtil.decrypt(customer.getPassword(), SECRET_KEY);
+                customer.setPassword(decryptedPassword);
+                return customer; // Return the updated customer object
+            } catch (Exception e) {
+                throw new RuntimeException("Error decrypting the password: " + e.getMessage(), e);
+            }
+        } else {
+            throw new InvalidCustomerIdException();
         }
-        else
-        {
-        	throw new InvalidCustomerIdException();
+    }
+    
+    public boolean updateCustomerAddress(String username, Address newAddress) {
+        Optional<Customer> customerOpt = customerRepository.findByUsername(username);
+        if (customerOpt.isPresent()) {
+            Customer customer = customerOpt.get();
+            customer.setAddress(newAddress);
+            customerRepository.save(customer);
+            return true;
+        } else {
+            return false;
         }
-        return c1;
     }
     
 
+    public void updateEmail(String username, String newEmail) {
+        // Find customer by username
+        Optional<Customer> customerOptional = customerRepository.findByUsername(username);
+        if (customerOptional.isEmpty()) {
+            throw new RuntimeException("Customer not found");
+        }
+
+        // Validate email format
+        Customer customer = customerOptional.get();
+        if (!isValidEmail(newEmail)) {
+            throw new InvalidEmailException("Invalid email format");
+        }
+
+        // Update email field
+        customer.setEmail(newEmail);
+        
+        // Save updated customer
+        customerRepository.save(customer);
+    }
+
+    // Email validation method using @Email annotation logic
+    private boolean isValidEmail(String email) {
+        // You can also perform additional checks or regex matching here if needed
+        return email != null && email.contains("@");
+    }
+ }
+        
+  
+        
  
-}
+    
+
+ 
+
 
 

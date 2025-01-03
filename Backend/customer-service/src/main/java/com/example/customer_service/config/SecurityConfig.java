@@ -14,10 +14,10 @@ public class SecurityConfig {
 	            .authorizeHttpRequests(auth -> auth
 	                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll() // Allow Swagger
 	                .requestMatchers("/api/customer/**").permitAll() // Allow registration
+	                //.requestMatchers("/api/transaction/**").permitAll() // Allow registration
 	                .anyRequest().authenticated() // Require authentication for other endpoints
 	            )
 	            .csrf(csrf -> csrf.disable()); // Disable CSRF for easier testing (only for development!)
 	        return http.build();
 	    }
 }
-
