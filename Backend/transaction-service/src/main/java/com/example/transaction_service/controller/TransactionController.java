@@ -28,7 +28,7 @@ public class TransactionController {
     private TransactionService transactionService;
 
   
-    @GetMapping("/type/{transactionType}")
+    @GetMapping("/{transactionType}")
     public ResponseEntity<List<TransactionInfo>> getTransactionsByType(@PathVariable String transactionType) {
         List<TransactionInfo> transactions = transactionService.getTransactionsByType(transactionType);
         return ResponseEntity.ok(transactions);
