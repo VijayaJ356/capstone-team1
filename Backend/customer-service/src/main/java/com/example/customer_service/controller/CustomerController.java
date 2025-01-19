@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.customer_service.dto.CustomerDetailsUpdateRequest;
 import com.example.customer_service.dto.EmailUpdateRequest;
 import com.example.customer_service.exception.InvalidCustomerIdException;
 import com.example.customer_service.model.Address;
@@ -34,8 +35,6 @@ public class CustomerController {
     public CustomerController(CustomerService customerService) {
         this.customerService = customerService;
     }
-
-    
     
     @CrossOrigin(origins = "*")
     @PostMapping("/register")
@@ -67,10 +66,48 @@ public class CustomerController {
 
         return ResponseEntity.ok("Email updated successfully");
     }
+    
+    
 
     @GetMapping("/{customerId}")
     public Customer getCustomer(@PathVariable Integer customerId)throws InvalidCustomerIdException {
         return customerService.getCustomerById(customerId );
+    }
+    
+    @PutMapping("/{username}/update-details")
+    public ResponseEntity<String> updateCustomerDetails(
+            @PathVariable("username") String username,
+            @RequestBody @Validated CustomerDetailsUpdateRequest updateRequest) {
+
+        boolean isAddressUpdated = false;
+        boolean isEmailUpdated = false;
+
+        try {
+            // Update Address if provided
+            if (updateRequest.getNewAddress() != null) {
+                isAddressUpdated = customerService.updateCustomerAddress(username, updateRequest.getNewAddress());
+                if (!isAddressUpdated) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer not found for address update");
+                }
+            }
+
+            // Update Email if provided
+            if (updateRequest.getNewEmail() != null) {
+                customerService.updateEmail(username, updateRequest.getNewEmail());
+                isEmailUpdated = true;
+            }
+
+            // Build response message
+            StringBuilder responseMessage = new StringBuilder("Update results: ");
+            if (isAddressUpdated) responseMessage.append("Address updated successfully. ");
+            if (isEmailUpdated) responseMessage.append("Email updated successfully. ");
+            if (!isAddressUpdated && !isEmailUpdated) responseMessage.append("No updates made.");
+
+            return ResponseEntity.ok(responseMessage.toString());
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
     }
     
 

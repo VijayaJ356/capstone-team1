@@ -1,20 +1,17 @@
-# Use an official Java runtime as a parent image
+# Use an OpenJDK base image
 FROM openjdk:17-jdk-slim
 
-# Set the working directory in the container
-WORKDIR /app
+# Add a volume for logs (optional)
+VOLUME /tmp
 
-# Copy the pom.xml and the source code
-COPY pom.xml .
-COPY src ./src
+# Copy the JAR file into the container
+COPY target/customer-service-0.0.1-SNAPSHOT.jar app.jar
 
-# Install Maven
-RUN apt-get update && \
-    apt-get install -y maven && \
-    rm -rf /var/lib/apt/lists/*
+# Expose the port (adjust to match your application settings)
+EXPOSE 9095
 
-# Package the application
-RUN mvn clean package
+RUN apt-get update && apt-get install -y curl
 
-# Command to run the application
-CMD ["mvn", "spring-boot:run"]
+
+# Run the JAR file
+ENTRYPOINT ["java", "-jar", "app.jar"]
