@@ -7,8 +7,9 @@ import org.springframework.data.mongodb.config.EnableMongoAuditing;
 
 
 @SpringBootApplication
-@EnableDiscoveryClient
+//@EnableDiscoveryClient
 @EnableMongoAuditing
+
 public class CustomerServiceApplication {
 
 	public static void main(String[] args) {

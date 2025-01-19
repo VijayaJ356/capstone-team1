@@ -117,7 +117,6 @@ public class CustomerService {
         }
     }
     
-
     public void updateEmail(String username, String newEmail) {
         // Find customer by username
         Optional<Customer> customerOptional = customerRepository.findByUsername(username);
