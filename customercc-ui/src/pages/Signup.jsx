@@ -203,7 +203,7 @@ export default function SignUp() {
             users.push(form);
 
             try {
-                const response = await axios.post("http://localhost:9095/api/customer/register", form);
+                const response = await axios.post("http://51.8.188.255:9095/api/customer/register", form);
                 console.log("[API] Customer registered successfully:", response.data);
             } catch (error) {
                 console.error("[API] Error registering customer:", error);
