@@ -6,52 +6,38 @@ Customer Registration
 Customer Object
 ```
 {
-  "username": "nitin16",
-  "password": "Pass11*",
+  "username": "nitinchandrasp1",
+  "password": "Pass@123",
   "name": {
-    "first": "nitin",
-    "last": "16"
+    "first": "Nitin Chandra",
+    "last": "S P1"
   },
-  "dob": "1990-01-03",
+  "dob": "1990-01-22",
   "sex": "MALE",
-  "email": "nitin16@email.com",
+  "email": "nitinchandrasp1@gmail.com",
   "address": {
-    "houseNo": "89",
-    "street": "street",
-    "city": "city",
-    "pin": "pin",
-    "state": "kar",
-    "country": "IND"
-  },
-  "active": true,
-  "createdAt": "2025-01-03T02:05:15.375Z",
-  "firstTimeLogin": true,
-  "passwordHistory": [
-    "string"
-  ],
-  "resetPasswordToken": "string",
-  "resetPasswordTokenExpiry": "2025-01-03T02:05:15.375Z",
-  "verificationToken": "string",
-  "verificationTokenExpiry": "2025-01-03T02:05:15.375Z",
-  "passwordExpiryDate": "2025-01-03T02:05:15.375Z",
-  "passwordLastUpdated": "2025-01-03T02:05:15.375Z"
+    "houseNo": "Houseno1",
+    "street": "Street1",
+    "city": "City1",
+    "pin": "Pin1",
+    "state": "State1",
+    "country": "Country1"
+  }
 }
 ```
 Transaction Object
 ```
 {
-"id": "6776e4eb3578da00dd0f99e8",
-"username": "nitin17",
+  "username": "nitin4",
   "creditcards": [
     {
       "creditCardId": 1,
       "transactions": [
         {
-          "transactionId": "26323484",
           "transactionDate": "4/17/2024",
           "transactionTime": "2:40 PM",
           "transactionType": "cr",
-          "transactionAmount": 1000
+          "transactionAmount": 1000.0
         }
       ]
     }
@@ -68,35 +54,23 @@ http://{hostname}/api/customer/register
 **Body** 
 ```
 {
-  "username": "nitin16",
-  "password": "Pass11*",
+  "username": "nitinchandrasp1",
+  "password": "Pass@123",
   "name": {
-    "first": "nitin",
-    "last": "16"
+    "first": "Nitin Chandra",
+    "last": "S P1"
   },
-  "dob": "1990-01-03",
+  "dob": "1990-01-22",
   "sex": "MALE",
-  "email": "nitin16@email.com",
+  "email": "nitinchandrasp1@gmail.com",
   "address": {
-    "houseNo": "89",
-    "street": "street",
-    "city": "city",
-    "pin": "pin",
-    "state": "kar",
-    "country": "IND"
-  },
-  "active": true,
-  "createdAt": "2025-01-03T02:05:15.375Z",
-  "firstTimeLogin": true,
-  "passwordHistory": [
-    "string"
-  ],
-  "resetPasswordToken": "string",
-  "resetPasswordTokenExpiry": "2025-01-03T02:05:15.375Z",
-  "verificationToken": "string",
-  "verificationTokenExpiry": "2025-01-03T02:05:15.375Z",
-  "passwordExpiryDate": "2025-01-03T02:05:15.375Z",
-  "passwordLastUpdated": "2025-01-03T02:05:15.375Z"
+    "houseNo": "Houseno1",
+    "street": "Street1",
+    "city": "City1",
+    "pin": "Pin1",
+    "state": "State1",
+    "country": "Country1"
+  }
 }
 ```
 **Success Response:**
@@ -116,40 +90,28 @@ http://{hostname}/api/customer/register
 **Body** 
 ```
 {
-  "username": "nitin16",
-  "password": "Pass11*",
+  "username": "nitinchandrasp1",
+  "password": "Pass@123",
   "name": {
-    "first": "nitin",
-    "last": "16"
+    "first": "Nitin Chandra",
+    "last": "S P1"
   },
-  "dob": "1990-01-03",
+  "dob": "1990-01-22",
   "sex": "MALE",
-  "email": "nitin16@email.com",
+  "email": "nitinchandrasp1@gmail.com",
   "address": {
-    "houseNo": "89",
-    "street": "street",
-    "city": "city",
-    "pin": "pin",
-    "state": "kar",
-    "country": "IND"
-  },
-  "active": true,
-  "createdAt": "2025-01-03T02:05:15.375Z",
-  "firstTimeLogin": true,
-  "passwordHistory": [
-    "string"
-  ],
-  "resetPasswordToken": "string",
-  "resetPasswordTokenExpiry": "2025-01-03T02:05:15.375Z",
-  "verificationToken": "string",
-  "verificationTokenExpiry": "2025-01-03T02:05:15.375Z",
-  "passwordExpiryDate": "2025-01-03T02:05:15.375Z",
-  "passwordLastUpdated": "2025-01-03T02:05:15.375Z"
+    "houseNo": "Houseno1",
+    "street": "Street1",
+    "city": "City1",
+    "pin": "Pin1",
+    "state": "State1",
+    "country": "Country1"
+  }
 }
 ```
 **Success Response:**
 
-Code: 200
+Code: 400
 Content:
 ```
 Please validate the data: username already exists
@@ -162,80 +124,132 @@ Please validate the data: username already exists
 http://{hostname}/api/customer/register
 ```
 **Body** 
-```
 {
-  "username": "nitin100",
-  "password": "Pass11*",
+  "username": "nitinchandrasp12",
+  "password": "Pass@123",
   "name": {
-    "first": "nitin",
-    "last": "16"
+    "first": "Nitin Chandra",
+    "last": "S P1"
   },
-  "dob": "1990-01-03",
+  "dob": "1990-01-22",
   "sex": "MALE",
-  "email": "nitin16@email.com",
+  "email": "nitinchandrasp1@gmail.com",
   "address": {
-    "houseNo": "89",
-    "street": "street",
-    "city": "city",
-    "pin": "pin",
-    "state": "kar",
-    "country": "IND"
-  },
-  "active": true,
-  "createdAt": "2025-01-03T02:05:15.375Z",
-  "firstTimeLogin": true,
-  "passwordHistory": [
-    "string"
-  ],
-  "resetPasswordToken": "string",
-  "resetPasswordTokenExpiry": "2025-01-03T02:05:15.375Z",
-  "verificationToken": "string",
-  "verificationTokenExpiry": "2025-01-03T02:05:15.375Z",
-  "passwordExpiryDate": "2025-01-03T02:05:15.375Z",
-  "passwordLastUpdated": "2025-01-03T02:05:15.375Z"
+    "houseNo": "Houseno1",
+    "street": "Street1",
+    "city": "City1",
+    "pin": "Pin1",
+    "state": "State1",
+    "country": "Country1"
+  }
 }
 ```
 **Success Response:**
 
-Code: 200
+Code: 400
 Content:
 ```
 Please validate the data: Email already exists
 ```
 ## HTTP Method
-### 3. User Story: list the transaction based on description spent 
+### 2.3. User Story: Register as customer invalid case
 ### GET /api/customer/register
 ### Url
 ```
+http://{hostname}/api/customer/register
+```
+**Body** 
+{
+  "username": "niti",
+  "password": "Pass@123",
+  "name": {
+    "first": "Nitin Chandra",
+    "last": "S P1"
+  },
+  "dob": "1990-01-22",
+  "sex": "MALE",
+  "email": "nitinchandrasp1@gmail.com",
+  "address": {
+    "houseNo": "Houseno1",
+    "street": "Street1",
+    "city": "City1",
+    "pin": "Pin1",
+    "state": "State1",
+    "country": "Country1"
+  }
+}
+```
+**Success Response:**
+
+Code: 400
+Content:
+```
+{
+  "username": "Username must be at least 6 characters"
+}
+```
+
+## HTTP Method
+### 2.4. User Story: Register as customer invalid case
+### GET /api/customer/register
+### Url
+```
+http://{hostname}/api/customer/register
+```
+**Body** 
+{
+  "username": "niti",
+  "password": "Pass",
+  "name": {
+    "first": "Nitin Chandra",
+    "last": "S P1"
+  },
+  "dob": "1990-01-22",
+  "sex": "MALE",
+  "email": "nitinchandrasp1@gmail.com",
+  "address": {
+    "houseNo": "Houseno1",
+    "street": "Street1",
+    "city": "City1",
+    "pin": "Pin1",
+    "state": "State1",
+    "country": "Country1"
+  }
+}
+```
+**Success Response:**
+
+Code: 400
+Content:
+```
+{
+  "password": "Password must contain at least one special character"
+}
+```
+
+**## HTTP Method
+### 3. User Story: list the transaction based on description spent by user
+### GET /api/customer/register
+### Url**
+```
 http://{hostname}/api/{transcationtype}
 ```
+**URL Params:** username 
 **URL Params:** transcationtype 
 **Success Response:**
 
 Code: 200
 Content:
 ```
-{
-    "transactionId": 762934044678,
-    "transactionDate": "6/20/2024",
-    "transactionTime": "4:43 AM",
-    "transactionType": "cr",
-    "transactionAmount": 1892.62
-  },
+
   {
-    "transactionId": 762934042368,
-    "transactionDate": "1/17/2024",
-    "transactionTime": "7:43 PM",
+    "transactionId": 562399765992,
+    "transactionDate": "4/17/2024",
+    "transactionTime": "2:40 PM",
     "transactionType": "cr",
-    "transactionAmount": 1143.43
-  },
-  {
-    "transactionId": 762934045851,
-    "transactionDate": "1/8/2024",
-    "transactionTime": "1:09 PM",
-    "transactionType": "cr",
-    "transactionAmount": 2155.54
-  },
+    "transactionAmount": 1000
+  }
+
 ```
 ## HTTP Method
 ### 4. User Story: Update Email Address for existing User
