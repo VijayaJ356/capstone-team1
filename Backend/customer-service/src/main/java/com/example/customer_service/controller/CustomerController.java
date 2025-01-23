@@ -1,10 +1,19 @@
 package com.example.customer_service.controller;
 
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.example.customer_service.dto.CustomerDetailsUpdateRequest;
 import com.example.customer_service.dto.EmailUpdateRequest;
@@ -15,91 +24,73 @@ import com.example.customer_service.service.CustomerService;
 
 import jakarta.validation.Valid;
 
+
 @RestController
 @RequestMapping("/api/customer")
 public class CustomerController {
-
+	
     private final CustomerService customerService;
-
+    
     @Autowired
     public CustomerController(CustomerService customerService) {
         this.customerService = customerService;
     }
-
-    // Register a new customer
+    
+    @CrossOrigin(origins = "*")
     @PostMapping("/register")
-    public ResponseEntity<String> registerCustomer(@Valid @RequestBody Customer customer) {
-        try {
-            String message = customerService.registerCustomer(customer);
-            return ResponseEntity.status(HttpStatus.CREATED).body(message);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error during registration: " + e.getMessage());
-        }
+    public String registerCustomer(@Valid @RequestBody Customer customer) throws Exception {
+        return customerService.registerCustomer(customer);
     }
-
-    // Get customer by ID
-    @GetMapping("/{customerId}")
-    public ResponseEntity<?> getCustomer(@PathVariable Integer customerId) {
-        try {
-            Customer customer = customerService.getCustomerById(customerId);
-            return ResponseEntity.ok(customer);
-        } catch (InvalidCustomerIdException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Customer with ID " + customerId + " not found.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error fetching customer details: " + e.getMessage());
-        }
-    }
-
-    // Update customer address
+    
+    @CrossOrigin(origins = "*")
     @PutMapping("/{username}/address")
     public ResponseEntity<String> updateAddress(
             @PathVariable("username") String username,
-            @RequestBody @Valid Address newAddress) {
-        try {
-            boolean isUpdated = customerService.updateCustomerAddress(username, newAddress);
-            if (isUpdated) {
-                return ResponseEntity.ok("Address updated successfully.");
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer not found.");
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error updating address: " + e.getMessage());
+            @RequestBody Address newAddress) {
+        boolean isUpdated = customerService.updateCustomerAddress(username, newAddress);
+        if (isUpdated) {
+            return ResponseEntity.ok("Address updated successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer not found");
         }
     }
+    
 
-    // Update customer email
+
+    // Endpoint to update email
+    @CrossOrigin(origins = "*")
     @PutMapping("/{username}/email")
     public ResponseEntity<String> updateEmail(
-            @PathVariable("username") String username,
+            @PathVariable String username,
             @RequestBody @Validated EmailUpdateRequest emailUpdateRequest) {
-        try {
-            customerService.updateEmail(username, emailUpdateRequest.getNewEmail());
-            return ResponseEntity.ok("Email updated successfully.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error updating email: " + e.getMessage());
-        }
-    }
 
-    // Update customer details (email and/or address)
+        customerService.updateEmail(username, emailUpdateRequest.getNewEmail());
+
+        return ResponseEntity.ok("Email updated successfully");
+    }
+    
+    
+    @CrossOrigin(origins = "*")
+    @GetMapping("/{customerId}")
+    public Customer getCustomer(@PathVariable Integer customerId)throws InvalidCustomerIdException {
+        return customerService.getCustomerById(customerId );
+    }
+    
+    @CrossOrigin(origins = "*")
     @PutMapping("/{username}/update-details")
     public ResponseEntity<String> updateCustomerDetails(
             @PathVariable("username") String username,
             @RequestBody @Validated CustomerDetailsUpdateRequest updateRequest) {
-        try {
-            boolean isAddressUpdated = false;
-            boolean isEmailUpdated = false;
 
+        boolean isAddressUpdated = false;
+        boolean isEmailUpdated = false;
+
+        try {
             // Update Address if provided
             if (updateRequest.getNewAddress() != null) {
                 isAddressUpdated = customerService.updateCustomerAddress(username, updateRequest.getNewAddress());
                 if (!isAddressUpdated) {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                            .body("Customer not found for address update.");
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer not found for address update");
                 }
             }
 
@@ -118,8 +109,10 @@ public class CustomerController {
             return ResponseEntity.ok(responseMessage.toString());
 
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error updating details: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
     }
+    
+
+
 }
