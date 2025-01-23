@@ -193,9 +193,6 @@ export default function SignUp() {
         e.preventDefault();
 
         if (validateForm()) {
-            // Add the new user to the users array
-            users.push(form);
-
             // Send data to API
             try {
                 const response = await axios.post("http://51.8.188.255:9095/api/customer/register", form);
@@ -210,6 +207,8 @@ export default function SignUp() {
                     console.log(form)
                 }
 
+                // Add the new user to the users array
+                users.push(form);
             } catch (error) {
                 console.error("[API] Error registering customer:", error);
             }
