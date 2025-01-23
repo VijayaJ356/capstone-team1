@@ -193,12 +193,6 @@ export default function SignUp() {
         e.preventDefault();
 
         if (validateForm()) {
-            console.log('Registered successfully');
-            alert('Registered successfully');
-            setRegistered(!registered)
-
-            console.log(form)
-
             // Add the new user to the users array
             users.push(form);
 
@@ -207,8 +201,13 @@ export default function SignUp() {
                 const response = await axios.post("http://51.8.188.255:9095/api/customer/register", form);
                 if (response.data.match("already exists")) {
                     console.log("[API]", response.data);
+                    alert(response.data);
                 } else {
+                    alert('Registered successfully');
+                    setRegistered(!registered)
+
                     console.log("[API] Customer registered successfully:", response.data);
+                    console.log(form)
                 }
 
             } catch (error) {

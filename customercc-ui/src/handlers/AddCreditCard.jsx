@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 import {
     Box,
@@ -41,17 +42,22 @@ const AddCreditCard = ({ open, onClose, onAddCard, existingCards }) => {
                 .replace(/(\d{4})(?=\d)/g, "$1-")
                 .slice(0, 19);
 
+            setFormData({ ...formData, [name]: formattedValue });
+
             // Validate card number
             const plainCardNumber = formData.cardNumber.replace(/-/g, " ");
 
-            if (plainCardNumber === "0000 0000 0000 0000") {
-                errors.cardNumber = "Card number cannot be all zeros.";
-                // eslint-disable-next-line react/prop-types
-            } else if (existingCards.includes(plainCardNumber)) {
+            if (existingCards.includes(plainCardNumber)) {
                 errors.cardNumber = "Card number must be unique.";
             }
+            if (plainCardNumber.length != 19) {
+                errors.cardNumber = "Card number must be 16 digits"
+            }
+            if (plainCardNumber === "0000 0000 0000 0000") {
+                errors.cardNumber = "Card number cannot be all zeros.";
+            }
 
-            setFormData({ ...formData, [name]: formattedValue });
+            // setFormData({ ...formData, [name]: formattedValue });
         }
         else if (name === "cvv") {
             const formattedValue = value
