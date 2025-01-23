@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { Link, Typography } from '@mui/material';
 
 export const Copyright = (props) => {

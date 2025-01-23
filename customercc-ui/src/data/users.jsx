@@ -1,5 +1,114 @@
 export const users = [
     {
+        "_id": {
+            "timestamp": 1737551403,
+            "date": "2025-01-22T13:10:03.000+00:00"
+        },
+        "username": "atulunique8892",
+        "password": "Atul123!",
+        "name": {
+            "first": "Atul",
+            "last": "Pahlazani"
+        },
+        "dob": "1992-08-08",
+        "sex": "MALE",
+        "email": "atulunique8892@gmail.com",
+        "customerId": 1841530482,
+        "address": {
+            "houseNo": "A-409 Ashish JK Apartments",
+            "street": "Thubarahalli",
+            "city": "Bengaluru",
+            "pin": "560066",
+            "state": "Karnataka",
+            "country": "India"
+        },
+        "active": false,
+        "createdAt": "2025-01-22T13:10:03.784+00:00",
+        "accountValidated": false,
+        "firstTimeLogin": false,
+        "passwordHistory": null,
+        "resetPasswordToken": null,
+        "resetPasswordTokenExpiry": null,
+        "verificationToken": null,
+        "verificationTokenExpiry": null,
+        "passwordExpiryDate": null,
+        "passwordLastUpdated": null
+    },
+    {
+        "_id": {
+            "timestamp": 1737524768,
+            "date": "2025-01-22T05:46:08.000+00:00"
+        },
+        "username": "nitin4",
+        "password": "Pass123#",
+        "name": {
+            "first": "nitin",
+            "last": "4"
+        },
+        "dob": "1990-01-21",
+        "sex": "MALE",
+        "email": "final@email.com",
+        "customerId": 174594546,
+        "address": {
+            "houseNo": "finalhouse",
+            "street": "finalstreet",
+            "city": "finalcity",
+            "pin": "finalpin",
+            "state": "finalstate",
+            "country": "finalcountry"
+        },
+        "active": false,
+        "createdAt": "2025-01-22T05:46:08.256+00:00",
+        "accountValidated": true,
+        "firstTimeLogin": true,
+        "passwordHistory": [
+            "string"
+        ],
+        "resetPasswordToken": "string",
+        "resetPasswordTokenExpiry": "2025-01-22T05:44:12.542+00:00",
+        "verificationToken": "string",
+        "verificationTokenExpiry": "2025-01-22T05:44:12.542+00:00",
+        "passwordExpiryDate": "2025-01-22T05:44:12.542+00:00",
+        "passwordLastUpdated": "2025-01-22T05:44:12.542+00:00"
+    },
+    {
+        "_id": {
+            "timestamp": 1736484493,
+            "date": "2025-01-10T04:48:13.000+00:00"
+        },
+        "username": "nitin20",
+        "password": "Pass*##",
+        "name": {
+            "first": "Nitin",
+            "last": "20"
+        },
+        "dob": "1990-01-09",
+        "sex": "MALE",
+        "email": "oldemail@email.com",
+        "customerId": 1157395944,
+        "address": {
+            "houseNo": "oldhouseno",
+            "street": "oldstreet",
+            "city": "oldcity",
+            "pin": "oldpin",
+            "state": "oldstate",
+            "country": "oldcountry"
+        },
+        "active": false,
+        "createdAt": "2025-01-10T04:48:13.692+00:00",
+        "accountValidated": false,
+        "firstTimeLogin": false,
+        "passwordHistory": [
+            "string"
+        ],
+        "resetPasswordToken": "string",
+        "resetPasswordTokenExpiry": "2025-01-10T04:46:31.849+00:00",
+        "verificationToken": "string",
+        "verificationTokenExpiry": "2025-01-10T04:46:31.849+00:00",
+        "passwordExpiryDate": "2025-01-10T04:46:31.849+00:00",
+        "passwordLastUpdated": "2025-01-10T04:46:31.849+00:00"
+    },
+    {
         "username": "user_1",
         "password": "B*N3v_As!0",
         "credit_card": ["2235867448495791", "5293337437688337", "2247913457229543"],

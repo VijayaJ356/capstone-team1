@@ -1,5 +1,5 @@
-/* eslint-disable react-refresh/only-export-components */
-import { createContext, useState, useMemo, useContext } from "react";
+
+import React, { createContext, useState, useMemo, useContext } from "react";
 import { createTheme, ThemeProvider, useMediaQuery } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 

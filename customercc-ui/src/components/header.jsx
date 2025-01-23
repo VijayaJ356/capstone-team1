@@ -1,3 +1,4 @@
+import React from 'react';
 import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 import { useAuth } from '../handlers/AuthContext'; // Custom Auth hook for context
 import { Link, useNavigate } from 'react-router-dom'; // For navigation

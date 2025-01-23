@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import React, { useState } from "react";
 import {
     Box,
     Button,
@@ -13,13 +13,11 @@ import {
 } from "@mui/material";
 import { useAuth } from '../handlers/AuthContext';
 
-// eslint-disable-next-line react/prop-types
 const AddCreditCard = ({ open, onClose, onAddCard, existingCards }) => {
     const { loggedInUser } = useAuth();
     const [formData, setFormData] = useState({
         cardNumber: "",
         nameOnCard: (typeof loggedInUser.name) == 'object' ? `${loggedInUser.name.first} ${loggedInUser.name.last}` : loggedInUser.name,
-        valid_from: "",
         expiry: "",
         cvv: "",
         wireTransactionVendor: "",
@@ -33,6 +31,7 @@ const AddCreditCard = ({ open, onClose, onAddCard, existingCards }) => {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
 
+        // Clear existing error for the field
         errors[name] = ""
 
         if (name === "cardNumber") {
@@ -50,7 +49,7 @@ const AddCreditCard = ({ open, onClose, onAddCard, existingCards }) => {
             if (existingCards.includes(plainCardNumber)) {
                 errors.cardNumber = "Card number must be unique.";
             }
-            if (plainCardNumber.length != 19) {
+            if (plainCardNumber.length < 19) {
                 errors.cardNumber = "Card number must be 16 digits"
             }
             if (plainCardNumber === "0000 0000 0000 0000") {
@@ -71,7 +70,7 @@ const AddCreditCard = ({ open, onClose, onAddCard, existingCards }) => {
 
             setFormData({ ...formData, [name]: formattedValue });
         }
-        else if (name === "valid_from" || name === "expiry") {
+        else if (name === "expiry") {
             const formattedValue = value
                 .replace(/\D/g, "")
                 .replace(/(\d{2})(?=\d)/g, "$1/")
@@ -83,9 +82,9 @@ const AddCreditCard = ({ open, onClose, onAddCard, existingCards }) => {
 
             // Validate Expiry
             if (name === "expiry") {
-                if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(formattedValue)) {
-                    errors.expiry = "Expiry must be in MM/YY format.";
-                }
+                // if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(formattedValue)) {
+                //     errors.expiry = "Expiry must be in MM/YY format.";
+                // }
 
                 const [month, year] = formattedValue.split("/").map(Number);
                 if (year < currentYear || (year === currentYear && month < currentMonth)) {
@@ -93,23 +92,9 @@ const AddCreditCard = ({ open, onClose, onAddCard, existingCards }) => {
                 }
             }
 
-            // Validate Valid From
-            if (name === "valid_from") {
-                if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(formattedValue)) {
-                    errors.valid_from = "Expiry must be in MM/YY format.";
-                }
-
-                const [month, year] = formattedValue.split("/").map(Number);
-                console.log(year, currentYear, month, currentMonth)
-                if (year > currentYear || (year === currentYear && month > currentMonth)) {
-                    errors.valid_from = "Issue date must be in the past"
-                }
-            }
-
             setFormData({ ...formData, [name]: formattedValue });
 
-        }
-        else {
+        } else {
             setFormData({ ...formData, [name]: value });
         }
 
@@ -118,15 +103,23 @@ const AddCreditCard = ({ open, onClose, onAddCard, existingCards }) => {
 
     const validateForm = () => {
         const newErrors = {}
+        Object.keys(formData).forEach(item => {
+            if (!formData[item].trim()) {
+                newErrors[item] = `${item} is required`
+            }
+        })
         Object.keys(errors).forEach(item => {
             if (errors[item] != "") {
                 newErrors[item] = errors[item]
             }
         })
+        setErrors(newErrors)
+
         return Object.keys(newErrors).length === 0;
     };
 
     const handleSubmit = () => {
+
         if (validateForm()) {
             const plainCardNumber = formData.cardNumber.replace(/-/g, " ");
             onAddCard({ ...formData, cardNumber: plainCardNumber });
@@ -136,7 +129,6 @@ const AddCreditCard = ({ open, onClose, onAddCard, existingCards }) => {
             setFormData({
                 cardNumber: "",
                 nameOnCard: (typeof loggedInUser.name) == 'object' ? `${loggedInUser.name.first} ${loggedInUser.name.last}` : loggedInUser.name,
-                valid_from: "",
                 expiry: "",
                 cvv: "",
                 wireTransactionVendor: "",
@@ -152,6 +144,7 @@ const AddCreditCard = ({ open, onClose, onAddCard, existingCards }) => {
             <DialogContent>
                 <Box component="form" noValidate>
                     <TextField
+                        required
                         fullWidth
                         margin="normal"
                         label="Card Number"
@@ -162,6 +155,7 @@ const AddCreditCard = ({ open, onClose, onAddCard, existingCards }) => {
                         error={!!errors.cardNumber}
                     />
                     <TextField
+                        required
                         fullWidth
                         margin="normal"
                         label="Name on Card"
@@ -173,16 +167,7 @@ const AddCreditCard = ({ open, onClose, onAddCard, existingCards }) => {
                         error={!!errors.nameOnCard}
                     />
                     <TextField
-                        fullWidth
-                        margin="normal"
-                        label="Valid From (MM/YY)"
-                        name="valid_from"
-                        value={formData.valid_from}
-                        onChange={handleInputChange}
-                        helperText={errors.valid_from}
-                        error={!!errors.valid_from}
-                    />
-                    <TextField
+                        required
                         fullWidth
                         margin="normal"
                         label="Expiry (MM/YY)"
@@ -193,6 +178,7 @@ const AddCreditCard = ({ open, onClose, onAddCard, existingCards }) => {
                         error={!!errors.expiry}
                     />
                     <TextField
+                        required
                         fullWidth
                         margin="normal"
                         label="CVV"

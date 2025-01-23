@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Card, CardContent, Typography, Button, Box, IconButton } from '@mui/material';
 import Grid from "@mui/material/Grid2"
 import AddCreditCard from '../handlers/AddCreditCard';
@@ -90,28 +90,24 @@ const CreditCards = () => {
         }
     };
 
-    function sleep(ms) { return new Promise((resolve) => setTimeout(resolve, ms)) }
-
-
-    const [showCardNumber, setShowCardNumber] = useState({}); // Track visibility of CardNumber for each card
+    const [showMaskedData, setShowMaskedData] = useState({}); // Track visibility of card numbers
+    const timeoutsRef = useRef({}); // Ref to track timeouts for each card
 
     // Toggle CardNumber visibility for a specific card
-    const toggleCardNumber = (id) => {
-        setShowCardNumber((prev) => ({ ...prev, [id]: !prev[id] }));
-        setTimeout(() => { setShowCardNumber((prev) => ({ ...prev, [id]: !prev[id] })) }, 5000)
+    const toggleMaskedData = (id) => {
+        // Clear any existing timeout for the card
+        if (timeoutsRef.current[id]) {
+            clearTimeout(timeoutsRef.current[id]);
+        }
+
+        // Toggle the visibility immediately
+        setShowMaskedData((prev) => ({ ...prev, [id]: !prev[id] }));
+
+        // Set a timeout to revert the visibility after 5 seconds
+        timeoutsRef.current[id] = setTimeout(() => {
+            setShowMaskedData((prev) => ({ ...prev, [id]: false }));
+        }, 5000);
     };
-
-    const [showCVV, setShowCVV] = useState({}); // Track visibility of CVV for each card
-
-    // Toggle CVV visibility for a specific card
-    const toggleCVV = async (id) => {
-        setShowCVV((prev) => ({ ...prev, [id]: !prev[id] }));
-        // setShowCardNumber((prev) => ({ ...prev, [id]: !prev[id] }));
-        await sleep(5000)
-        setShowCVV((prev) => ({ ...prev, [id]: !prev[id] }));
-        // setShowCardNumber((prev) => ({ ...prev, [id]: !prev[id] }))
-    };
-
 
     const [cardStatus, setCardStatus] = useState(null); // Track visibility of CardNumber for each card
     function toggleStatus(card) {
@@ -186,7 +182,7 @@ const CreditCards = () => {
                             justifyContent: "space-between",
                         }}
                     >
-                        <CardContent>
+                        <CardContent sx={{ padding: "20px" }}>
                             <Typography
                                 variant="body1"
                                 sx={{
@@ -227,22 +223,22 @@ const CreditCards = () => {
                                     fontWeight: "bold"
                                 }}
                             >
-                                {showCardNumber[index] ? card.cardNumber : `•••• •••• •••• ${card.cardNumber.slice(-4)}`}
+                                {showMaskedData[index] ? card.cardNumber : `•••• •••• •••• ${card.cardNumber.slice(-4)}`}
                                 {/* •••• •••• •••• {card.cardNumber.slice(-4)} */}
-                                <IconButton
-                                    onClick={() => toggleCardNumber(index)}
+                                {/* <IconButton
+                                    onClick={() => toggleMaskedData(index)}
                                     sx={{ color: "#fff" }}
                                 >
-                                    {showCardNumber[index] ? (
+                                    {showMaskedData[index] ? (
                                         <VisibilityOffIcon />
                                     ) : (
                                         <VisibilityIcon />
                                     )}
-                                </IconButton>
+                                </IconButton> */}
                             </Typography>
 
                             {/* Valid From and Expiry */}
-                            <Grid container spacing={1} sx={{ marginTop: { xs: "1", sm: "2" }, alignItems: "center", textAlign: "center" }}>
+                            <Grid container spacing={1} sx={{ marginTop: { xs: ".5rem", sm: "1rem" }, alignItems: "center", textAlign: "center" }}>
                                 <Grid item size={2}>
                                     <Typography variant="body2" sx={{ fontSize: { xs: ".8rem", sm: ".9rem" } }}>Expiry</Typography>
                                     <Typography variant="body1" sx={{ fontWeight: "bold", fontSize: { xs: ".8rem", sm: ".9rem" } }}>{card.expiry}</Typography>
@@ -253,21 +249,21 @@ const CreditCards = () => {
                                     <Typography variant="body2" sx={{ fontSize: { xs: ".8rem", sm: ".9rem" } }}>{"CVV"}
                                     </Typography>
                                     <Typography variant="body1" sx={{ fontWeight: "bold", fontSize: { xs: ".8rem", sm: ".9rem" } }}>
-                                        {showCVV[index] ? card.cvv : "***"}
+                                        {showMaskedData[index] ? card.cvv : "***"}
                                     </Typography>
                                 </Grid>
-                                <Grid item size={1}>
+                                {/* <Grid item size={1}>
                                     <IconButton
-                                        onClick={() => toggleCVV(index)}
+                                        onClick={() => toggleMaskedData(index)}
                                         sx={{ color: "#fff", padding: "0px", marginLeft: "5px" }}
                                     >
-                                        {showCVV[index] ? (
+                                        {showMaskedData[index] ? (
                                             <VisibilityOffIcon />
                                         ) : (
                                             <VisibilityIcon />
                                         )}
                                     </IconButton>
-                                </Grid>
+                                </Grid> */}
                             </Grid>
                             <Typography
                                 variant="h6"
@@ -280,7 +276,21 @@ const CreditCards = () => {
                                 }}
                             >
                                 {userCardsData.nameOnTheCard.first ? `${userCardsData.nameOnTheCard.first} ${userCardsData.nameOnTheCard.last}` : userCardsData.nameOnTheCard}
+
+                                <span style={{ float: "right", textAlign: "center" }}>
+                                    <IconButton
+                                        onClick={() => toggleMaskedData(index)}
+                                        sx={{ color: "#fff", padding: "0px", marginLeft: "5px" }}
+                                    >
+                                        {showMaskedData[index] ? (
+                                            <VisibilityOffIcon />
+                                        ) : (
+                                            <VisibilityIcon />
+                                        )}
+                                    </IconButton>
+                                </span>
                             </Typography>
+
                             {/* <IconButton
                                 onClick={() => toggleCVV(index)}
                                 sx={{ color: "#fff", padding: "0px", marginLeft: "5px" }}
