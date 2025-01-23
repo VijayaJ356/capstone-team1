@@ -9,7 +9,7 @@ export var cards = [
                 "expiry": "11/28",
                 "cvv": "527",
                 "wireTransactionVendor": "American Express",
-                "status": "enabled"
+                "status": "active"
             },
             {
                 "cardNumber": "5126 3060 4221 3968",
@@ -17,7 +17,7 @@ export var cards = [
                 "expiry": "02/27",
                 "cvv": "295",
                 "wireTransactionVendor": "VISA",
-                "status": "disabled"
+                "status": "inactive"
             },
             {
                 "cardNumber": "3768 4529 1127 5942",
@@ -25,7 +25,7 @@ export var cards = [
                 "expiry": "06/29",
                 "cvv": "431",
                 "wireTransactionVendor": "MasterCard",
-                "status": "enabled"
+                "status": "active"
             },
             {
                 "cardNumber": "6211 9259 1374 0154",
@@ -33,7 +33,7 @@ export var cards = [
                 "expiry": "12/30",
                 "cvv": "682",
                 "wireTransactionVendor": "Rupay",
-                "status": "enabled"
+                "status": "active"
             },
             {
                 "cardNumber": "4011 9252 1374 2314",
@@ -41,7 +41,7 @@ export var cards = [
                 "expiry": "12/32",
                 "cvv": "237",
                 "wireTransactionVendor": "Rupay",
-                "status": "disabled"
+                "status": "inactive"
             }
         ]
     },
@@ -55,7 +55,7 @@ export var cards = [
                 "expiry": "01/26",
                 "cvv": "842",
                 "wireTransactionVendor": "VISA",
-                "status": "enabled"
+                "status": "active"
             },
             {
                 "cardNumber": "3749 7528 6523 1486",
@@ -63,7 +63,7 @@ export var cards = [
                 "expiry": "10/30",
                 "cvv": "384",
                 "wireTransactionVendor": "American Express",
-                "status": "disabled"
+                "status": "inactive"
             },
             {
                 "cardNumber": "6011 9525 1423 7612",
@@ -71,7 +71,7 @@ export var cards = [
                 "expiry": "03/27",
                 "cvv": "928",
                 "wireTransactionVendor": "Rupay",
-                "status": "enabled"
+                "status": "active"
             }
         ]
     },
@@ -85,7 +85,7 @@ export var cards = [
                 "expiry": "05/29",
                 "cvv": "672",
                 "wireTransactionVendor": "MasterCard",
-                "status": "enabled"
+                "status": "active"
             },
             {
                 "cardNumber": "3715 9632 8752 4095",
@@ -93,7 +93,7 @@ export var cards = [
                 "expiry": "08/28",
                 "cvv": "247",
                 "wireTransactionVendor": "American Express",
-                "status": "enabled"
+                "status": "active"
             },
             {
                 "cardNumber": "5112 8736 4098 2514",
@@ -101,7 +101,7 @@ export var cards = [
                 "expiry": "02/30",
                 "cvv": "519",
                 "wireTransactionVendor": "VISA",
-                "status": "disabled"
+                "status": "inactive"
             }
         ]
     },
@@ -115,7 +115,7 @@ export var cards = [
                 "expiry": "07/29",
                 "cvv": "314",
                 "wireTransactionVendor": "American Express",
-                "status": "disabled"
+                "status": "inactive"
             },
             {
                 "cardNumber": "5241 8612 7845 1209",
@@ -123,7 +123,7 @@ export var cards = [
                 "expiry": "04/26",
                 "cvv": "475",
                 "wireTransactionVendor": "VISA",
-                "status": "enabled"
+                "status": "active"
             },
             {
                 "cardNumber": "6011 9258 1374 0154",
@@ -131,7 +131,7 @@ export var cards = [
                 "expiry": "12/30",
                 "cvv": "682",
                 "wireTransactionVendor": "Rupay",
-                "status": "enabled"
+                "status": "active"
             }
         ]
     },
@@ -145,7 +145,7 @@ export var cards = [
                 "expiry": "09/29",
                 "cvv": "514",
                 "wireTransactionVendor": "MasterCard",
-                "status": "disabled"
+                "status": "inactive"
             },
             {
                 "cardNumber": "3759 8652 1294 5103",
@@ -153,7 +153,7 @@ export var cards = [
                 "expiry": "06/30",
                 "cvv": "293",
                 "wireTransactionVendor": "American Express",
-                "status": "enabled"
+                "status": "active"
             },
             {
                 "cardNumber": "5126 8524 9512 6093",
@@ -161,7 +161,7 @@ export var cards = [
                 "expiry": "08/27",
                 "cvv": "784",
                 "wireTransactionVendor": "VISA",
-                "status": "enabled"
+                "status": "active"
             }
         ]
     },
@@ -175,7 +175,7 @@ export var cards = [
                 "expiry": "11/28",
                 "cvv": "845",
                 "wireTransactionVendor": "VISA",
-                "status": "disabled"
+                "status": "inactive"
             },
             {
                 "cardNumber": "3756 4983 5214 2697",
@@ -183,7 +183,7 @@ export var cards = [
                 "expiry": "01/27",
                 "cvv": "319",
                 "wireTransactionVendor": "American Express",
-                "status": "enabled"
+                "status": "active"
             },
             {
                 "cardNumber": "5121 6492 0871 5172",
@@ -191,7 +191,7 @@ export var cards = [
                 "expiry": "05/29",
                 "cvv": "291",
                 "wireTransactionVendor": "MasterCard",
-                "status": "enabled"
+                "status": "active"
             }
         ]
     },
@@ -205,7 +205,7 @@ export var cards = [
                 "expiry": "03/30",
                 "cvv": "658",
                 "wireTransactionVendor": "Rupay",
-                "status": "enabled"
+                "status": "active"
             },
             {
                 "cardNumber": "5187 6894 6572 9931",
@@ -213,7 +213,7 @@ export var cards = [
                 "expiry": "12/27",
                 "cvv": "290",
                 "wireTransactionVendor": "VISA",
-                "status": "disabled"
+                "status": "inactive"
             },
             {
                 "cardNumber": "5283 8761 4195 2804",
@@ -221,7 +221,7 @@ export var cards = [
                 "expiry": "06/28",
                 "cvv": "405",
                 "wireTransactionVendor": "American Express",
-                "status": "enabled"
+                "status": "active"
             }
         ]
     },
@@ -235,7 +235,7 @@ export var cards = [
                 "expiry": "07/27",
                 "cvv": "374",
                 "wireTransactionVendor": "VISA",
-                "status": "enabled"
+                "status": "active"
             },
             {
                 "cardNumber": "3749 2816 7345 1069",
@@ -243,7 +243,7 @@ export var cards = [
                 "expiry": "04/29",
                 "cvv": "153",
                 "wireTransactionVendor": "American Express",
-                "status": "disabled"
+                "status": "inactive"
             },
             {
                 "cardNumber": "5197 6504 1127 8286",
@@ -251,7 +251,7 @@ export var cards = [
                 "expiry": "08/29",
                 "cvv": "522",
                 "wireTransactionVendor": "MasterCard",
-                "status": "enabled"
+                "status": "active"
             }
         ]
     },
@@ -265,7 +265,7 @@ export var cards = [
                 "expiry": "09/28",
                 "cvv": "937",
                 "wireTransactionVendor": "Rupay",
-                "status": "disabled"
+                "status": "inactive"
             },
             {
                 "cardNumber": "5246 6794 8315 2237",
@@ -273,7 +273,7 @@ export var cards = [
                 "expiry": "03/29",
                 "cvv": "485",
                 "wireTransactionVendor": "VISA",
-                "status": "enabled"
+                "status": "active"
             },
             {
                 "cardNumber": "3702 4395 6815 7745",
@@ -281,7 +281,7 @@ export var cards = [
                 "expiry": "02/28",
                 "cvv": "175",
                 "wireTransactionVendor": "American Express",
-                "status": "enabled"
+                "status": "active"
             }
         ]
     },
@@ -295,7 +295,7 @@ export var cards = [
                 "expiry": "01/27",
                 "cvv": "518",
                 "wireTransactionVendor": "American Express",
-                "status": "disabled"
+                "status": "inactive"
             },
             {
                 "cardNumber": "5121 9876 4839 2617",
@@ -303,7 +303,7 @@ export var cards = [
                 "expiry": "06/28",
                 "cvv": "690",
                 "wireTransactionVendor": "MasterCard",
-                "status": "enabled"
+                "status": "active"
             },
             {
                 "cardNumber": "4537 6314 8702 4231",
@@ -311,7 +311,7 @@ export var cards = [
                 "expiry": "04/29",
                 "cvv": "134",
                 "wireTransactionVendor": "VISA",
-                "status": "enabled"
+                "status": "active"
             }
         ]
     },
@@ -325,7 +325,7 @@ export var cards = [
                 "expiry": "02/27",
                 "cvv": "531",
                 "wireTransactionVendor": "Rupay",
-                "status": "disabled"
+                "status": "inactive"
             },
             {
                 "cardNumber": "5102 6587 3498 3122",
@@ -333,7 +333,7 @@ export var cards = [
                 "expiry": "07/28",
                 "cvv": "248",
                 "wireTransactionVendor": "VISA",
-                "status": "enabled"
+                "status": "active"
             },
             {
                 "cardNumber": "5254 4736 7253 3195",
@@ -341,7 +341,7 @@ export var cards = [
                 "expiry": "11/29",
                 "cvv": "302",
                 "wireTransactionVendor": "MasterCard",
-                "status": "enabled"
+                "status": "active"
             }
         ]
     },
@@ -355,7 +355,7 @@ export var cards = [
                 "expiry": "06/28",
                 "cvv": "173",
                 "wireTransactionVendor": "American Express",
-                "status": "enabled"
+                "status": "active"
             },
             {
                 "cardNumber": "5241 9387 6632 1412",
@@ -363,7 +363,7 @@ export var cards = [
                 "expiry": "09/29",
                 "cvv": "206",
                 "wireTransactionVendor": "VISA",
-                "status": "disabled"
+                "status": "inactive"
             },
             {
                 "cardNumber": "6011 7425 2715 1629",
@@ -371,7 +371,7 @@ export var cards = [
                 "expiry": "08/27",
                 "cvv": "573",
                 "wireTransactionVendor": "Rupay",
-                "status": "enabled"
+                "status": "active"
             }
         ]
     },
@@ -385,7 +385,7 @@ export var cards = [
                 "expiry": "12/28",
                 "cvv": "387",
                 "wireTransactionVendor": "VISA",
-                "status": "enabled"
+                "status": "active"
             },
             {
                 "cardNumber": "3741 9837 5632 0902",
@@ -393,7 +393,7 @@ export var cards = [
                 "expiry": "11/30",
                 "cvv": "243",
                 "wireTransactionVendor": "American Express",
-                "status": "disabled"
+                "status": "inactive"
             },
             {
                 "cardNumber": "5275 7412 1163 9565",
@@ -401,7 +401,7 @@ export var cards = [
                 "expiry": "02/29",
                 "cvv": "914",
                 "wireTransactionVendor": "MasterCard",
-                "status": "enabled"
+                "status": "active"
             }
         ]
     },
@@ -415,7 +415,7 @@ export var cards = [
                 "expiry": "03/27",
                 "cvv": "567",
                 "wireTransactionVendor": "Rupay",
-                "status": "disabled"
+                "status": "inactive"
             },
             {
                 "cardNumber": "5102 6354 7201 3641",
@@ -423,7 +423,7 @@ export var cards = [
                 "expiry": "04/29",
                 "cvv": "213",
                 "wireTransactionVendor": "VISA",
-                "status": "enabled"
+                "status": "active"
             },
             {
                 "cardNumber": "3749 6130 4769 3921",
@@ -431,7 +431,7 @@ export var cards = [
                 "expiry": "05/28",
                 "cvv": "471",
                 "wireTransactionVendor": "American Express",
-                "status": "enabled"
+                "status": "active"
             }
         ]
     },
@@ -445,7 +445,7 @@ export var cards = [
                 "expiry": "06/28",
                 "cvv": "482",
                 "wireTransactionVendor": "VISA",
-                "status": "enabled"
+                "status": "active"
             },
             {
                 "cardNumber": "3742 6731 8563 1295",
@@ -453,7 +453,7 @@ export var cards = [
                 "expiry": "07/29",
                 "cvv": "246",
                 "wireTransactionVendor": "American Express",
-                "status": "disabled"
+                "status": "inactive"
             },
             {
                 "cardNumber": "5283 1642 5109 3405",
@@ -461,7 +461,7 @@ export var cards = [
                 "expiry": "08/30",
                 "cvv": "239",
                 "wireTransactionVendor": "MasterCard",
-                "status": "enabled"
+                "status": "active"
             }
         ]
     },
@@ -475,7 +475,7 @@ export var cards = [
                 "expiry": "02/27",
                 "cvv": "719",
                 "wireTransactionVendor": "American Express",
-                "status": "enabled"
+                "status": "active"
             },
             {
                 "cardNumber": "6011 4968 2703 2452",
@@ -483,7 +483,7 @@ export var cards = [
                 "expiry": "01/29",
                 "cvv": "324",
                 "wireTransactionVendor": "Rupay",
-                "status": "disabled"
+                "status": "inactive"
             },
             {
                 "cardNumber": "5246 1943 8274 5325",
@@ -491,7 +491,7 @@ export var cards = [
                 "expiry": "06/28",
                 "cvv": "129",
                 "wireTransactionVendor": "VISA",
-                "status": "enabled"
+                "status": "active"
             }
         ]
     },
@@ -505,7 +505,7 @@ export var cards = [
                 "expiry": "09/29",
                 "cvv": "205",
                 "wireTransactionVendor": "MasterCard",
-                "status": "disabled"
+                "status": "inactive"
             },
             {
                 "cardNumber": "5282 7613 5420 2173",
@@ -513,7 +513,7 @@ export var cards = [
                 "expiry": "07/27",
                 "cvv": "479",
                 "wireTransactionVendor": "VISA",
-                "status": "enabled"
+                "status": "active"
             },
             {
                 "cardNumber": "6012 7194 6317 4002",
@@ -521,7 +521,7 @@ export var cards = [
                 "expiry": "04/28",
                 "cvv": "540",
                 "wireTransactionVendor": "Rupay",
-                "status": "enabled"
+                "status": "active"
             }
         ]
     },
@@ -535,7 +535,7 @@ export var cards = [
                 "expiry": "10/29",
                 "cvv": "831",
                 "wireTransactionVendor": "MasterCard",
-                "status": "enabled"
+                "status": "active"
             },
             {
                 "cardNumber": "3741 8294 6702 8615",
@@ -543,7 +543,7 @@ export var cards = [
                 "expiry": "02/27",
                 "cvv": "299",
                 "wireTransactionVendor": "American Express",
-                "status": "disabled"
+                "status": "inactive"
             },
             {
                 "cardNumber": "6011 4305 7264 5835",
@@ -551,7 +551,7 @@ export var cards = [
                 "expiry": "05/28",
                 "cvv": "140",
                 "wireTransactionVendor": "Rupay",
-                "status": "enabled"
+                "status": "active"
             }
         ]
     },
@@ -565,7 +565,7 @@ export var cards = [
                 "expiry": "07/27",
                 "cvv": "238",
                 "wireTransactionVendor": "VISA",
-                "status": "enabled"
+                "status": "active"
             },
             {
                 "cardNumber": "6011 4123 7821 9122",
@@ -573,7 +573,7 @@ export var cards = [
                 "expiry": "08/28",
                 "cvv": "157",
                 "wireTransactionVendor": "Rupay",
-                "status": "disabled"
+                "status": "inactive"
             },
             {
                 "cardNumber": "4537 1689 2145 9074",
@@ -581,7 +581,7 @@ export var cards = [
                 "expiry": "04/30",
                 "cvv": "620",
                 "wireTransactionVendor": "MasterCard",
-                "status": "enabled"
+                "status": "active"
             }
         ]
     },
@@ -595,7 +595,7 @@ export var cards = [
                 "expiry": "03/27",
                 "cvv": "479",
                 "wireTransactionVendor": "VISA",
-                "status": "enabled"
+                "status": "active"
             },
             {
                 "cardNumber": "3749 8316 5247 6841",
@@ -603,7 +603,7 @@ export var cards = [
                 "expiry": "11/29",
                 "cvv": "508",
                 "wireTransactionVendor": "American Express",
-                "status": "disabled"
+                "status": "inactive"
             },
             {
                 "cardNumber": "6011 6375 9231 4065",
@@ -611,7 +611,7 @@ export var cards = [
                 "expiry": "10/29",
                 "cvv": "392",
                 "wireTransactionVendor": "Rupay",
-                "status": "enabled"
+                "status": "active"
             }
         ]
     }

@@ -1,6 +1,5 @@
 
 import { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, Typography, Button, Box, IconButton } from '@mui/material';
 import Grid from "@mui/material/Grid2"
 import AddCreditCard from '../handlers/AddCreditCard';
@@ -8,6 +7,8 @@ import { cards } from '../data/creditcards'
 import { useAuth } from '../handlers/AuthContext';
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+
+import { ToggleOnOutlined, ToggleOffOutlined } from '@mui/icons-material';
 
 import visaIcon from '../assets/icons/visa.png';
 import masterCardIcon from '../assets/icons/mastercard.png';
@@ -17,7 +18,6 @@ import defaultIcon from '../assets/icons/default.png';
 
 
 const CreditCards = () => {
-    const navigate = useNavigate()
     const { loggedInUser } = useAuth();
     // const [cards, setCards] = useState(null)
     const [userCardslist, setUserCardsList] = useState([]);
@@ -84,15 +84,11 @@ const CreditCards = () => {
             // If user does not exist, create a new user entry in cards
             cards.push({
                 username: loggedInUser.username,
-                nameOnTheCard: loggedInUser.name || loggedInUser.username,
+                nameOnTheCard: loggedInUser.name.first + loggedInUser.name.last || loggedInUser.username,
                 credit_card: [newCardData],
             });
         }
     };
-
-    function routetoprofile() {
-        navigate('/profile')
-    }
 
     function sleep(ms) { return new Promise((resolve) => setTimeout(resolve, ms)) }
 
@@ -110,17 +106,25 @@ const CreditCards = () => {
     // Toggle CVV visibility for a specific card
     const toggleCVV = async (id) => {
         setShowCVV((prev) => ({ ...prev, [id]: !prev[id] }));
+        // setShowCardNumber((prev) => ({ ...prev, [id]: !prev[id] }));
         await sleep(5000)
         setShowCVV((prev) => ({ ...prev, [id]: !prev[id] }));
+        // setShowCardNumber((prev) => ({ ...prev, [id]: !prev[id] }))
     };
 
 
+    const [cardStatus, setCardStatus] = useState(null); // Track visibility of CardNumber for each card
     function toggleStatus(card) {
-        const userCard = userCardsData.credit_card.find((item) => item.cardNumber === "6211 9259 1374 0154");
+        const userCard = userCardsData.credit_card.find((item) => item.cardNumber === card.cardNumber);
+        setCardStatus((prev) => ({
+            ...prev,
+            status: card.status,
+        }))
 
-        if (card.status == "disabled") { card.status = "enabled" }
-        else if (card.status == "enabled") { card.status = "disabled" }
-        console.log(userCard, card.status,)
+        if (card.status == "inactive") { card.status = "active" }
+        else if (card.status == "active") { card.status = "inactive" }
+
+        console.log(userCard, cardStatus)
     };
 
     const getwireTransactionVendorStyle = (type) => {
@@ -155,14 +159,15 @@ const CreditCards = () => {
 
     return (
         <>
-            <Button sx={{ marginTop: 10, marginBottom: 2 }} type="button" onClick={routetoprofile}>Back to Profile</Button>
             <Box
                 sx={{
                     display: "flex",
                     flexWrap: "wrap",
+                    position: "relative",
                     gap: 2,
                     justifyContent: "center",
                     padding: 0,
+                    marginTop: 5,
                 }}
             >
                 {userCardslist ? userCardslist.map((card, index) => (
@@ -187,85 +192,81 @@ const CreditCards = () => {
                                 sx={{
                                     fontSize: { xs: ".9rem", sm: "1rem" },
                                     letterSpacing: 2,
-                                    textAlign: "left"
+                                    textAlign: "left",
                                 }}>
                                 {/* Card Type */}
                                 <img src={getCardIcon(card.wireTransactionVendor)} alt={card.wireTransactionVendor} align="" />
 
                                 {/* Card Status */}
-                                <span style={{ position: "inline-flex", float: "right", align: "center", color: `${card.status === 'enabled' ? 'lightgreen' : 'red'}` }} >
+                                <span style={{ float: "right", textAlign: "center", color: `${card.status === 'active' ? 'lightgreen' : 'red'}` }} >
                                     {card.status.charAt(0).toUpperCase() + card.status.slice(1)}
 
                                     <IconButton
-                                        color="primary"
                                         aria-label="add an alarm"
                                         onClick={() => toggleStatus(card)}
                                     >
+                                        {card.status == "inactive" ?
+                                            <ToggleOffOutlined />
+                                            :
+                                            <ToggleOnOutlined />
+                                        }
                                     </IconButton>
                                 </span>
+
                             </Typography>
 
-                            <Box
+                            {/* Masked Card Number */}
+                            <Typography
+                                variant="body1"
                                 sx={{
-                                    display: "inline-flex",
-                                    justifyContent: "left",
-                                    alignItems: "left",
+                                    fontSize: { xs: "1rem", sm: "1.2rem" },
+                                    letterSpacing: 4,
+                                    marginTop: { xs: "0rem", sm: ".2rem" },
                                     textAlign: "left",
+                                    width: "100%",
+                                    fontWeight: "bold"
                                 }}
                             >
-                                {/* Masked Card Number */}
-                                <Typography
-                                    variant="body1"
-                                    sx={{
-                                        fontSize: { xs: ".9rem", sm: "1.1rem" },
-                                        letterSpacing: 3,
-                                        marginTop: { xs: ".5", sm: "1" },
-                                        textAlign: "left"
-                                    }}
+                                {showCardNumber[index] ? card.cardNumber : `•••• •••• •••• ${card.cardNumber.slice(-4)}`}
+                                {/* •••• •••• •••• {card.cardNumber.slice(-4)} */}
+                                <IconButton
+                                    onClick={() => toggleCardNumber(index)}
+                                    sx={{ color: "#fff" }}
                                 >
-                                    {showCardNumber[index] ? card.cardNumber : `•••• •••• •••• ${card.cardNumber.slice(-4)}`}
-                                    {/* •••• •••• •••• {card.cardNumber.slice(-4)} */}
-                                    <IconButton
-                                        onClick={() => toggleCardNumber(index)}
-                                        sx={{ color: "#fff" }}
-                                    >
-                                        {showCardNumber[index] ? (
-                                            <VisibilityOffIcon />
-                                        ) : (
-                                            <VisibilityIcon />
-                                        )}
-                                    </IconButton>
-                                </Typography>
-
-                            </Box>
+                                    {showCardNumber[index] ? (
+                                        <VisibilityOffIcon />
+                                    ) : (
+                                        <VisibilityIcon />
+                                    )}
+                                </IconButton>
+                            </Typography>
 
                             {/* Valid From and Expiry */}
-                            <Grid container spacing={1} sx={{ marginTop: { xs: ".8", sm: "1.5" }, alignItems: "center", textAlign: "center" }}>
-                                <Grid item size={3}>
-                                    <Typography variant="body2" sx={{ fontSize: { xs: ".8rem", sm: ".9rem" } }} >Valid From</Typography>
-                                    <Typography variant="body1" sx={{ fontWeight: "bold", fontSize: { xs: ".8rem", sm: ".9rem" } }}>{card.valid_from}</Typography>
-                                </Grid>
-                                <Grid item size={5}>
+                            <Grid container spacing={1} sx={{ marginTop: { xs: "1", sm: "2" }, alignItems: "center", textAlign: "center" }}>
+                                <Grid item size={2}>
                                     <Typography variant="body2" sx={{ fontSize: { xs: ".8rem", sm: ".9rem" } }}>Expiry</Typography>
                                     <Typography variant="body1" sx={{ fontWeight: "bold", fontSize: { xs: ".8rem", sm: ".9rem" } }}>{card.expiry}</Typography>
                                 </Grid>
 
                                 {/* CVV and Toggle Button */}
-                                <Grid item size={4}>
+                                <Grid item size={2}>
                                     <Typography variant="body2" sx={{ fontSize: { xs: ".8rem", sm: ".9rem" } }}>{"CVV"}
-                                        <IconButton
-                                            onClick={() => toggleCVV(index)}
-                                            sx={{ color: "#fff", padding: "0px", marginLeft: "5px" }}
-                                        >
-                                            {showCVV[index] ? (
-                                                <VisibilityOffIcon />
-                                            ) : (
-                                                <VisibilityIcon />
-                                            )}
-                                        </IconButton></Typography>
+                                    </Typography>
                                     <Typography variant="body1" sx={{ fontWeight: "bold", fontSize: { xs: ".8rem", sm: ".9rem" } }}>
                                         {showCVV[index] ? card.cvv : "***"}
                                     </Typography>
+                                </Grid>
+                                <Grid item size={1}>
+                                    <IconButton
+                                        onClick={() => toggleCVV(index)}
+                                        sx={{ color: "#fff", padding: "0px", marginLeft: "5px" }}
+                                    >
+                                        {showCVV[index] ? (
+                                            <VisibilityOffIcon />
+                                        ) : (
+                                            <VisibilityIcon />
+                                        )}
+                                    </IconButton>
                                 </Grid>
                             </Grid>
                             <Typography
@@ -273,23 +274,33 @@ const CreditCards = () => {
                                 sx={{
                                     fontSize: { xs: "1rem", sm: "1.2rem" },
                                     letterSpacing: 1,
-                                    marginTop: 2,
+                                    marginTop: { xs: ".5rem", sm: "1rem" },
                                     fontWeight: "bold",
                                     textAlign: "left",
                                 }}
                             >
                                 {userCardsData.nameOnTheCard.first ? `${userCardsData.nameOnTheCard.first} ${userCardsData.nameOnTheCard.last}` : userCardsData.nameOnTheCard}
                             </Typography>
+                            {/* <IconButton
+                                onClick={() => toggleCVV(index)}
+                                sx={{ color: "#fff", padding: "0px", marginLeft: "5px" }}
+                            >
+                                {showCVV[index] ? (
+                                    <VisibilityOffIcon />
+                                ) : (
+                                    <VisibilityIcon />
+                                )}
+                            </IconButton> */}
                         </CardContent>
                     </Card>
 
                 ))
                     : <Typography
-                        variant="h6"
+                        variant="h1"
                         sx={{
                             fontSize: "1.2rem",
                             letterSpacing: 1,
-                            marginTop: 3,
+                            marginTop: "2rem",
                             fontWeight: "bold",
                             textAlign: "left",
                         }}

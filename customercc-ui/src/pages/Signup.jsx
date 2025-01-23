@@ -17,7 +17,7 @@ import { users } from '../data/users'
 
 export default function SignUp() {
     const navigate = useNavigate();
-    const { loggedInUser, login } = useAuth();
+    const { loggedInUser } = useAuth();
 
     // States for form input values and error messages
     const [form, setForm] = useState({
@@ -81,9 +81,9 @@ export default function SignUp() {
             const [, key] = name.split(".");
             formattedvalue = value.replace(/[^a-zA-Z]/g, "");    // Remove any non-alphabets
 
-            if (!(/^(?=.{6,})/.test(formattedvalue))) {
-                errors[name] = 'Please enter min 6 chars'
-            }
+            // if (!(/^(?=.{6,})/.test(formattedvalue))) {
+            //     errors[name] = 'Please enter min 6 chars'
+            // }
 
             setForm((prev) => ({
                 ...prev,
@@ -202,30 +202,27 @@ export default function SignUp() {
             // Add the new user to the users array
             users.push(form);
 
+            // Send data to API
             try {
                 const response = await axios.post("http://51.8.188.255:9095/api/customer/register", form);
-                console.log("[API] Customer registered successfully:", response.data);
+                if (response.data.match("already exists")) {
+                    console.log("[API]", response.data);
+                } else {
+                    console.log("[API] Customer registered successfully:", response.data);
+                }
+
             } catch (error) {
                 console.error("[API] Error registering customer:", error);
             }
 
-            // Send data to API
-            // fetch("http://localhost:9095/api/customer/register", {
-            //     method: "POST",
-            //     headers: { "Content-Type": "application/json" },
-            //     body: JSON.stringify(form),
-            // })
-            //     .then((response) => response.json())
-            //     .then((data) => console.log("Update successful:", data))
-            //     .catch((error) => console.error("Error updating user:", error));
-
+            navigate('/login')
             // Login with newly register account
-            let auth = login(form.email, form.password)
-            if (auth) {
-                console.log('Login successful');
-                navigate('/profile')
-            }
-            else { alert("Authentication Failed") }
+            // let auth = login(form.email, form.password)
+            // if (auth) {
+            //     console.log('Login successful');
+            //     navigate('/profile')
+            // }
+            // else { alert("Authentication Failed") }
         }
     };
 

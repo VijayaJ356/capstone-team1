@@ -17,12 +17,12 @@ const AddCreditCard = ({ open, onClose, onAddCard, existingCards }) => {
     const { loggedInUser } = useAuth();
     const [formData, setFormData] = useState({
         cardNumber: "",
-        nameOnCard: loggedInUser.name.first ? `${loggedInUser.name.first} ${loggedInUser.name.last}` : loggedInUser.name,
+        nameOnCard: (typeof loggedInUser.name) == 'object' ? `${loggedInUser.name.first} ${loggedInUser.name.last}` : loggedInUser.name,
         valid_from: "",
         expiry: "",
         cvv: "",
         wireTransactionVendor: "",
-        status: "enabled",
+        status: "active",
     });
 
     const [errors, setErrors] = useState({});
@@ -129,12 +129,12 @@ const AddCreditCard = ({ open, onClose, onAddCard, existingCards }) => {
 
             setFormData({
                 cardNumber: "",
-                nameOnCard: loggedInUser.name.first ? `${loggedInUser.name.first} ${loggedInUser.name.last}` : loggedInUser.name,
+                nameOnCard: (typeof loggedInUser.name) == 'object' ? `${loggedInUser.name.first} ${loggedInUser.name.last}` : loggedInUser.name,
                 valid_from: "",
                 expiry: "",
                 cvv: "",
                 wireTransactionVendor: "",
-                status: "enabled",
+                status: "active",
             });
             onClose();
         }
@@ -201,7 +201,7 @@ const AddCreditCard = ({ open, onClose, onAddCard, existingCards }) => {
                         required
                         fullWidth
                         margin="normal"
-                        label="wireTransactionVendor"
+                        label="Vendor"
                         name="wireTransactionVendor"
                         select
                         value={formData.wireTransactionVendor}

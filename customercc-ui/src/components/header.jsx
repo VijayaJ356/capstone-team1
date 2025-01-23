@@ -34,7 +34,7 @@ const Header = () => {
                     ) : (
                         <>
                             <Typography variant="body1" color="inherit" sx={{ marginRight: 2, fontSize: { xs: ".9rem", sm: "1rem" } }}>
-                                Welcome, {loggedInUser.name.first ? loggedInUser.name.first : loggedInUser.name}
+                                Welcome, {(typeof loggedInUser.name) == 'object' ? loggedInUser.name.first : loggedInUser.name}
                             </Typography>
                             <Button color="inherit" onClick={routetoprofile} sx={{ fontSize: { xs: ".8rem", sm: "1rem" } }}>
                                 Profile

@@ -4,8 +4,9 @@ import { useAuth } from '../handlers/AuthContext';
 import { Box, TextField, Button, Typography, Grid } from "@mui/material";
 import { ThemeProviderAuto } from '../handlers/Theme';
 
-const UserProfile = () => {
+import axios from "axios";
 
+const UserProfile = () => {
   const navigate = useNavigate()
   const { loggedInUser } = useAuth();
 
@@ -17,7 +18,7 @@ const UserProfile = () => {
   const [userData, setUserData] = useState(loggedInUser);
   const [errors, setErrors] = useState({})
   const [isEditing, setIsEditing] = useState(false);
-
+  const [isEdited, setIsEdited] = useState(false);
 
   // Handler to toggle editing mode
   const toggleEdit = () => {
@@ -38,6 +39,7 @@ const UserProfile = () => {
           errors[name] = 'Please enter min 6 digits'
         }
       }
+      setIsEdited(true)
       setUserData((prev) => ({
         ...prev,
         address: { ...prev.address, [key]: formattedvalue },
@@ -51,20 +53,23 @@ const UserProfile = () => {
   };
 
   // Handler to save changes
-  const saveChanges = () => {
-    delete userData.password;
-    delete userData.credit_card;
-    console.log("Updated User Data:", userData);
+  const saveChanges = async () => {
+    if (isEdited) {
+      const newUserData = {
+        newAddress: userData.address,
+        newEmail: userData.email
+      }
+      console.log("Updated User Data:", newUserData, userData.username);
 
-    // Send data to API
-    // fetch("https://api.example.com/updateUser", {
-    //     method: "POST",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify(userData),
-    // })
-    //     .then((response) => response.json())
-    //     .then((data) => console.log("Update successful:", data))
-    //     .catch((error) => console.error("Error updating user:", error));
+      // Send data to API
+      try {
+        const response = await axios.put(`http://51.8.188.255:9095/api/customer/${userData.username}/update-details`, newUserData);
+        console.log("[API] Customer data updated successfully:", response.data);
+      } catch (error) {
+        console.error("[API] Error updating customer data:", error);
+      }
+
+    }
 
     setIsEditing(false);
   };
@@ -80,8 +85,7 @@ const UserProfile = () => {
             <TextField
               label="Name"
               name="name"
-              value={userData.name.first ? `${userData.name.first} ${userData.name.last}` : userData.name}
-              onChange={handleInputChange}
+              value={(typeof userData.name) == 'object' ? `${userData.name.first} ${userData.name.last}` : userData.name}
               fullWidth
               disabled
             />
@@ -102,7 +106,6 @@ const UserProfile = () => {
               name="dob"
               type="date"
               value={userData.dob}
-              onChange={handleInputChange}
               fullWidth
               disabled
               InputLabelProps={{ shrink: true }}
@@ -113,7 +116,6 @@ const UserProfile = () => {
               label="Sex"
               name="sex"
               value={userData.sex}
-              onChange={handleInputChange}
               fullWidth
               disabled
             />
@@ -123,10 +125,8 @@ const UserProfile = () => {
               label="Username"
               name="username"
               value={userData.username}
-              onChange={handleInputChange}
               fullWidth
               disabled
-            // helperText="Username cannot be changed"
             />
           </Grid>
           {userData.address && (
@@ -201,11 +201,11 @@ const UserProfile = () => {
             </Button>
           ) : (
             <>
-              <Button variant="contained" color="success" onClick={saveChanges}>
-                Save
-              </Button>
               <Button variant="outlined" color="error" onClick={toggleEdit}>
                 Cancel
+              </Button>
+              <Button variant="contained" color="success" onClick={saveChanges}>
+                Save
               </Button>
             </>
           )}
