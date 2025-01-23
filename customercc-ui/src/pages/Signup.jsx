@@ -196,31 +196,34 @@ export default function SignUp() {
             // Send data to API
             try {
                 const response = await axios.post("http://51.8.188.255:9095/api/customer/register", form);
-                if (response.data.match("already exists")) {
-                    console.log("[API]", response.data);
-                    alert(response.data);
-                } else {
-                    alert('Registered successfully');
-                    setRegistered(!registered)
+                if (response.data) {
+                    if (response.data.match("already exists")) {
+                        console.log("[API]", response.data);
+                        alert(response.data);
+                    } else {
+                        alert('Registered successfully');
+                        setRegistered(!registered)
 
-                    console.log("[API] Customer registered successfully:", response.data);
-                    console.log(form)
+                        console.log("[API] Customer registered successfully:", response.data);
+                        console.log(form)
+                    }
                 }
 
                 // Add the new user to the users array
                 users.push(form);
+
+
+                navigate('/login')
+                // Login with newly register account
+                // let auth = login(form.email, form.password)
+                // if (auth) {
+                //     console.log('Login successful');
+                //     navigate('/profile')
+                // }
+                // else { alert("Authentication Failed") }
             } catch (error) {
                 console.error("[API] Error registering customer:", error);
             }
-
-            navigate('/login')
-            // Login with newly register account
-            // let auth = login(form.email, form.password)
-            // if (auth) {
-            //     console.log('Login successful');
-            //     navigate('/profile')
-            // }
-            // else { alert("Authentication Failed") }
         }
     };
 
