@@ -206,21 +206,20 @@ export default function SignUp() {
 
                         console.log("[API] Customer registered successfully:", response.data);
                         console.log(form)
+
+                        navigate('/login')
+                        // Login with newly register account
+                        // let auth = login(form.email, form.password)
+                        // if (auth) {
+                        //     console.log('Login successful');
+                        //     navigate('/profile')
+                        // }
+                        // else { alert("Authentication Failed") }
                     }
                 }
 
                 // Add the new user to the users array
                 users.push(form);
-
-
-                navigate('/login')
-                // Login with newly register account
-                // let auth = login(form.email, form.password)
-                // if (auth) {
-                //     console.log('Login successful');
-                //     navigate('/profile')
-                // }
-                // else { alert("Authentication Failed") }
             } catch (error) {
                 console.error("[API] Error registering customer:", error);
             }
