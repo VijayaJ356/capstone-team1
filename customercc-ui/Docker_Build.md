@@ -8,4 +8,5 @@ Running the Docker Container:
 Open a browser and navigate to http://51.8.188.255:80.
 
 51.8.188.255 - Public IP of the Cloud VM Instance
+http://creaditcardmanager-com.eastus2.cloudapp.azure.com/
 

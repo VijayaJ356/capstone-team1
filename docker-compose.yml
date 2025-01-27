@@ -1,0 +1,43 @@
+services:
+  # Customer service
+  customer:
+    build:
+      context: ./Backend/customer-service
+      dockerfile: Dockerfile
+    container_name: customer-service
+    ports:
+      - '9095:8080' # Expose backend on port 9095
+    networks:
+      - ccm # Connect to the custom network
+
+  # Transaction service
+  transaction:
+    build:
+      context: ./Backend/transaction-service
+      dockerfile: Dockerfile
+    container_name: transaction-service
+    ports:
+      - '9097:8080' # Expose backend on port 9097
+    networks:
+      - ccm # Connect to the custom network
+
+  # Frontend service
+  frontend:
+    build:
+      context: ./customercc-ui
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - '3000:80' # Expose frontend on port 3000
+    environment:
+      - BACKEND_API_URL=http://backend:8090 # Set the backend API URL for React
+    stdin_open: true
+    networks:
+      - ccm # Connect to the same custom network
+
+# Define a custom network for inter-container communication
+networks:
+  ccm:
+    driver: bridge
+
+# docker compose up --build -d
