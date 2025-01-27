@@ -72,5 +72,4 @@ const EmailVerification = () => {
         </Container>
     );
 };
-
 export default EmailVerification;
