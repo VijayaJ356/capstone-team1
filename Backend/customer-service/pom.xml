@@ -9,6 +9,9 @@
 		<version>1.0.0</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
+	<properties>
+		<sonar.projectKey>VijayaJ356_capstone-team1_${project.artifactId}</sonar.projectKey>
+	</properties>
 
 	<artifactId>customer-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>

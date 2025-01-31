@@ -7,6 +7,9 @@
 		<artifactId>credit-card-management</artifactId>
 		<version>1.0.0</version>
 	</parent>
+	<properties>
+		<sonar.projectKey>VijayaJ356_capstone-team1_${project.artifactId}</sonar.projectKey>
+	</properties>
 	<groupId>com.microservices.eureka</groupId>
 	<artifactId>netflix-eureka-naming-server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>

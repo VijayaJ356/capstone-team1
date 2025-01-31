@@ -27,7 +27,7 @@
         <spring-cloud.version>2023.0.1</spring-cloud.version>
         <sonar.organization>jimmidi-vijaya</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <sonar.projectKey>VijayaJ356_capstone-team1</sonar.projectKey>
+        <sonar.projectKey>VijayaJ356_capstone-team1_parent</sonar.projectKey>
     </properties>
 
     <dependencyManagement>
