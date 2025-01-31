@@ -4,8 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.example</groupId>
-		<artifactId>credit-card-management</artifactId>
+		<groupId>com.example.transaction</groupId>
+		<artifactId>transaction-service</artifactId>
 		<version>1.0-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
