@@ -19,6 +19,7 @@
     <modules>
         <module>customer-service</module>
         <module>transaction-service</module>
+        <module>netflix-eureka-naming-server</module>
     </modules>
 
     <properties>
