@@ -27,17 +27,16 @@ public class TransactionController {
 	
     @Autowired
     private TransactionService transactionService;
-    
-    
+
+
     @GetMapping("/{username}/{transactionType}")
     public ResponseEntity<List<TransactionInfo>> getTransactionsByUsernameAndType(
             @PathVariable String username,
             @PathVariable String transactionType) {
         List<TransactionInfo> transactions = transactionService.getTransactionsByUsernameAndType(username, transactionType);
-        if (transactions.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(transactions);
-        }
-        return ResponseEntity.ok(transactions);
+        return transactions.isEmpty() ?
+                ResponseEntity.status(HttpStatus.NOT_FOUND).build() :  // Change here
+                ResponseEntity.ok(transactions);
     }
 
   
