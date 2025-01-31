@@ -27,17 +27,17 @@ public class TransactionService {
     		throw new TransactionNotFoundException("No transactions found for username: " + username + " and transaction type: " + transactionType);
         }
         List<TransactionInfo> filteredTransactions = new ArrayList<>();
-        for (Transaction transaction : transactions) {
-            if (transaction.getUsername().equalsIgnoreCase(username)) {
-                for (CreditCardInfo card : transaction.getCreditcards()) {
-                    for (TransactionInfo info : card.getTransactions()) {
-                        if (info.getTransactionType().equalsIgnoreCase(transactionType)) {
-                            filteredTransactions.add(info);
-                        }
-                    }
-                }
-            }
-        }
+//        for (Transaction transaction : transactions) {
+//            if (transaction.getUsername().equalsIgnoreCase(username)) {
+//                for (CreditCardInfo card : transaction.getCreditcards()) {
+//                    for (TransactionInfo info : card.getTransactions()) {
+//                        if (info.getTransactionType().equalsIgnoreCase(transactionType)) {
+//                            filteredTransactions.add(info);
+//                        }
+//                    }
+//                }
+//            }
+//        }
         return filteredTransactions;
     }
 	
