@@ -8,6 +8,8 @@ class TransactionServiceApplicationTests {
 
 	@Test
 	void contextLoads() {
+		TransactionServiceApplication.main(new String[] {});
+		assertTrue(true); // Just verifies the application starts without errors
 	}
 
 }
