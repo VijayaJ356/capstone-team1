@@ -45,10 +45,18 @@ public class AESUtilTest {
     @Test
     void decrypt_WrongKey_ThrowsException() {
         String originalText = "testPassword123";
-        assertThrows(Exception.class, () -> {
+
+        try {
+            // First encrypt with the correct key
             String encrypted = AESUtil.encrypt(originalText, SECRET_KEY);
-            AESUtil.decrypt(encrypted, "wrongKey1234567");
-        });
+
+            // Then test the decryption with wrong key
+            assertThrows(Exception.class, () -> {
+                AESUtil.decrypt(encrypted, "wrongKey1234567");
+            });
+        } catch (Exception e) {
+            fail("Encryption step should not fail: " + e.getMessage());
+        }
     }
 
     @Test
@@ -71,5 +79,11 @@ public class AESUtilTest {
         String decrypted = AESUtil.decrypt(encrypted, longKey);
 
         assertEquals(text, decrypted);
+    }
+
+    @Test
+    void testAESUtilClassInstantiation() {
+        AESUtil aesUtil = new AESUtil();
+        assertNotNull(aesUtil);
     }
 }
