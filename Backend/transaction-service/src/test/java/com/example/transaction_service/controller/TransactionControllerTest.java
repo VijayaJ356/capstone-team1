@@ -109,4 +109,27 @@ public class TransactionControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("Transaction saved successfully"));
     }
+
+    @Test
+    void getTransactionsByUsernameAndType_WhenNoTransactions_ReturnsNotFound() {
+        when(transactionService.getTransactionsByUsernameAndType("user1", "DEBIT"))
+                .thenReturn(Collections.emptyList());
+
+        ResponseEntity<List<TransactionInfo>> response =
+                controller.getTransactionsByUsernameAndType("user1", "DEBIT");
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void getTransactionsByUsernameAndType_WhenTransactionsExist_ReturnsOk() {
+        List<TransactionInfo> transactions = Arrays.asList(new TransactionInfo());
+        when(transactionService.getTransactionsByUsernameAndType("user1", "DEBIT"))
+                .thenReturn(transactions);
+
+        ResponseEntity<List<TransactionInfo>> response =
+                controller.getTransactionsByUsernameAndType("user1", "DEBIT");
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
 }

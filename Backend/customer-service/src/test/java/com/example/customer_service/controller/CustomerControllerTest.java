@@ -22,6 +22,10 @@ import com.example.customer_service.model.Customer;
 import com.example.customer_service.model.Name;
 import com.example.customer_service.service.CustomerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import static org.junit.jupiter.api.Assertions.*;
+import com.example.customer_service.dto.CustomerDetailsUpdateRequest;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -35,6 +39,9 @@ public class CustomerControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private CustomerController controller;
 
     @MockBean
     private CustomerService customerService;
@@ -81,5 +88,30 @@ public class CustomerControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"newEmail\":\"newemail@example.com\"}"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void updateCustomerDetails_WhenAddressUpdateFails_ReturnsNotFound() {
+        CustomerDetailsUpdateRequest request = new CustomerDetailsUpdateRequest();
+        Address newAddress = new Address("123", "Street", "City", "12345", "State", "Country");
+        request.setNewAddress(newAddress);
+        when(customerService.updateCustomerAddress(anyString(), any()))
+                .thenReturn(false);
+
+        ResponseEntity<String> response = controller.updateCustomerDetails("user1", request);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void updateCustomerDetails_WhenBothUpdatesSucceed_ReturnsOk() {
+        CustomerDetailsUpdateRequest request = new CustomerDetailsUpdateRequest();
+        Address newAddress = new Address("123", "Street", "City", "12345", "State", "Country");
+        request.setNewAddress(newAddress);
+        request.setNewEmail("new@email.com");
+        when(customerService.updateCustomerAddress(anyString(), any()))
+                .thenReturn(true);
+
+        ResponseEntity<String> response = controller.updateCustomerDetails("user1", request);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 }
