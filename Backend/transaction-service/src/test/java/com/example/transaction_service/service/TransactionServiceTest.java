@@ -1,4 +1,5 @@
 package com.example.transaction_service.service;
+import com.example.transaction_service.exception.TransactionNotFoundException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -125,5 +126,50 @@ public class TransactionServiceTest {
         });
 
         verify(transactionRepository, never()).save(any());
+    }
+
+    @Test
+    void getTransactionsByUsernameAndType_NoTransactionsFound() {
+        // Mock repository to return empty list
+        when(transactionRepository.findTransactionsByUsernameAndType("johndoe", "CR"))
+                .thenReturn(Arrays.asList());
+
+        // Assert that TransactionNotFoundException is thrown
+        TransactionNotFoundException exception = assertThrows(
+                TransactionNotFoundException.class,
+                () -> transactionService.getTransactionsByUsernameAndType("johndoe", "CR")
+        );
+
+        assertEquals("No transactions found for username: johndoe and transaction type: CR",
+                exception.getMessage());
+    }
+
+    @Test
+    void getTransactionsByType_NoTransactionsFound() {
+        // Mock repository to return empty list
+        when(transactionRepository.findAll()).thenReturn(Arrays.asList());
+
+        // Assert that TransactionNotFoundException is thrown
+        TransactionNotFoundException exception = assertThrows(
+                TransactionNotFoundException.class,
+                () -> transactionService.getTransactionsByType("CR")
+        );
+
+        assertEquals("No transactions found", exception.getMessage());
+    }
+
+    @Test
+    void findTransactionsByTypeAndCard_NoTransactionsFound() {
+        // Mock repository to return empty list
+        when(transactionRepository.findAll()).thenReturn(Arrays.asList());
+
+        // Assert that TransactionNotFoundException is thrown
+        TransactionNotFoundException exception = assertThrows(
+                TransactionNotFoundException.class,
+                () -> transactionService.findTransactionsByTypeAndCard("CR", 12345)
+        );
+
+        assertEquals("No transactions found for transactionType: CR and creditCardId: 12345",
+                exception.getMessage());
     }
 }
