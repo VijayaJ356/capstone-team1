@@ -150,4 +150,61 @@ public class CustomerServiceTest {
         });
         verify(customerRepository, never()).save(any(Customer.class));
     }
+
+    @Test
+    void registerCustomer_CustomerIdTaken() throws Exception {
+        when(customerRepository.existsByUsername(anyString())).thenReturn(false);
+        when(customerRepository.existsByCustomerId(anyInt())).thenReturn(true);
+
+        String result = customerService.registerCustomer(testCustomer);
+        assertEquals("Please validate the data: Customer Id already exists", result);
+        verify(customerRepository, never()).save(any(Customer.class));
+    }
+
+    @Test
+    void registerCustomer_InvalidPassword() throws Exception {
+        testCustomer.setPassword("simple"); // Password without special character
+        when(customerRepository.existsByUsername(anyString())).thenReturn(false);
+        when(customerRepository.existsByCustomerId(anyInt())).thenReturn(false);
+
+        String result = customerService.registerCustomer(testCustomer);
+        assertEquals("Please validate the data: Password must contain at least one special character and be at least 6 characters long", result);
+        verify(customerRepository, never()).save(any(Customer.class));
+    }
+
+    @Test
+    void getCustomerById_DecryptionError() {
+        // Create a test customer with similar structure as in setUp()
+        Name name = new Name("John", "Doe");
+        Address address = new Address("123", "Main St", "City", "12345", "State", "Country");
+        Customer customerWithInvalidPassword = new Customer(
+                null,                   // ObjectId
+                "johndoe",             // username
+                "invalidEncryptedPassword", // password
+                name,                  // Name object
+                LocalDate.of(1990, 1, 1), // dob
+                Customer.Sex.MALE,     // sex
+                "john@example.com",    // email
+                12345,                // customerId
+                address,              // Address object
+                true,                 // active
+                null,                 // lastLoginDate
+                false,               // locked
+                true,                // enabled
+                null,                // roles
+                null,                // securityQuestion
+                null,                // lastPasswordChange
+                null,                // passwordResetToken
+                null,                // passwordResetTokenExpiry
+                null,                // lastFailedLoginAttempt
+                null                 // lockoutTime
+        );
+
+        when(customerRepository.findByCustomerId(anyInt())).thenReturn(Optional.of(customerWithInvalidPassword));
+
+        assertThrows(RuntimeException.class, () -> {
+            customerService.getCustomerById(12345);
+        });
+    }
+
 }
