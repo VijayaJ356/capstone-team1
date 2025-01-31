@@ -109,27 +109,6 @@ public class TransactionControllerTest {
                 .andExpect(jsonPath("$").isEmpty());
     }
 
-//    @Test
-//    void addTransaction_Success() throws Exception {
-//        when(transactionService.saveTransaction(any(Transaction.class)))
-//                .thenReturn("Transaction saved successfully");
-//
-//        mockMvc.perform(post("/api/transaction/add")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(testTransaction)))
-//                .andExpect(status().isOk())
-//                .andExpect(content().string("Transaction saved successfully"));
-//    }
-
-//    @Test
-//    void getTransactionsByUsernameAndType_WhenNoTransactions_ReturnsNotFound() throws Exception {
-//        when(transactionService.getTransactionsByUsernameAndType("user1", "DEBIT"))
-//                .thenReturn(new ArrayList<>());
-//
-//        mockMvc.perform(get("/api/transaction/user1/DEBIT"))
-//                .andDo(print()) // AND HERE
-//                .andExpect(status().isNotFound());
-//    }
 
     @Test
     void getTransactionsByUsernameAndType_WhenTransactionsExist_ReturnsOk() throws Exception {
